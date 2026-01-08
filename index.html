@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawing QR Template - Product Information</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #2c3e50;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .data-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .data-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .card-content {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            min-height: 40px;
+            word-break: break-word;
+        }
+        
+        .error-container {
+            background-color: #ffeaea;
+            border-left: 5px solid #e74c3c;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .error-title {
+            color: #c0392b;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .info-note {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+        
+        .decoded-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px dashed #bdc3c7;
+        }
+        
+        .decoded-title {
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .decoded-value {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.2rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .data-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-qrcode"></i> Drawing QR Template</h1>
+        <p>Product Information Display System</p>
+    </div>
+    
+    <div class="decoded-info">
+        <div class="decoded-title">Decoded URL Parameters</div>
+        <div id="decodedParams" class="decoded-value">Loading...</div>
+    </div>
+    
+    <div class="error-container" id="errorContainer">
+        <div class="error-title" id="errorTitle">Error Title</div>
+        <div id="errorMessage">Error details will appear here.</div>
+    </div>
+    
+    <div class="loading-container" id="loadingContainer">
+        <div class="spinner"></div>
+        <p>Loading product information...</p>
+    </div>
+    
+    <div class="data-container" id="dataContainer">
+        <!-- Data cards will be inserted here by JavaScript -->
+    </div>
+    
+    <div class="info-note">
+        <i class="fas fa-info-circle"></i> This information is retrieved from the 2026 Collection of Operational Entry Form based on the Sales Order No. and Item No. encoded in the QR code.
+    </div>
+    
+    <div class="footer">
+        <p>HL Steel Industries Sdn Bhd &copy; 2026 | Drawing QR Template System</p>
+    </div>
+
+    <script>
+        // Function to decode base64 string
+        function decodeBase64(str) {
+            try {
+                // Base64 decoding with proper handling
+                return decodeURIComponent(atob(str).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+            } catch (error) {
+                console.error('Base64 decoding error:', error);
+                throw new Error('Invalid base64 encoding');
+            }
+        }
+        
+        // Function to parse URL parameters
+        function getUrlParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedData = urlParams.get('H');
+            
+            if (!encodedData) {
+                throw new Error('No encoded data found in URL. Please ensure the URL contains ?H= parameter.');
+            }
+            
+            // Decode the base64 parameter
+            const decodedString = decodeBase64(encodedData);
+            
+            // Split by & to get Sales Order No. and Item No.
+            const parts = decodedString.split('&');
+            
+            if (parts.length !== 2) {
+                throw new Error('Decoded data does not contain Sales Order No. and Item No. separated by &');
+            }
+            
+            return {
+                salesOrderNo: parts[0],
+                itemNo: parts[1],
+                fullString: decodedString
+            };
+        }
+        
+        // Function to fetch data from Google Apps Script
+        async function fetchProductData(salesOrderNo, itemNo) {
+            // Replace with your deployed GAS web app URL
+            const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbyjfwYQgKS96Ow4DrPQzTJG03jHr0uxMZT1-09FFSeNYnHwwrCZADpCvnlh-YsduuW1/exec';
+            
+            const response = await fetch(`${gasWebAppUrl}?salesOrderNo=${encodeURIComponent(salesOrderNo)}&itemNo=${encodeURIComponent(itemNo)}`);
+            
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+            }
+            
+            return await response.json();
+        }
+        
+        // Function to display data in cards
+        function displayData(data) {
+            const dataContainer = document.getElementById('dataContainer');
+            dataContainer.innerHTML = '';
+            
+            // Define the fields to display and their icons
+            const fields = [
+                { key: 'salesOrderNo', title: 'Sales Order No.', icon: 'fas fa-file-invoice' },
+                { key: 'customerName', title: 'Customer Name', icon: 'fas fa-user-tie' },
+                { key: 'itemNo', title: 'Item No.', icon: 'fas fa-hashtag' },
+                { key: 'itemName', title: 'Item Name', icon: 'fas fa-box' },
+                { key: 'dimension', title: 'Dimension', icon: 'fas fa-ruler-combined' },
+                { key: 'quantity', title: 'Quantity', icon: 'fas fa-cubes' },
+                { key: 'unitOfMeasurement', title: 'Unit of Measurement', icon: 'fas fa-balance-scale' },
+                { key: 'estimatedDeliveryDate', title: 'Estimated Delivery Date', icon: 'fas fa-calendar-day' }
+            ];
+            
+            // Create a card for each field
+            fields.forEach(field => {
+                const card = document.createElement('div');
+                card.className = 'data-card';
+                
+                const value = data[field.key] || 'Not available';
+                
+                card.innerHTML = `
+                    <div class="card-title">
+                        <i class="${field.icon}"></i> ${field.title}
+                    </div>
+                    <div class="card-content">${value}</div>
+                `;
+                
+                dataContainer.appendChild(card);
+            });
+        }
+        
+        // Function to show error
+        function showError(title, message) {
+            document.getElementById('errorTitle').textContent = title;
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorContainer').style.display = 'block';
+            document.getElementById('loadingContainer').style.display = 'none';
+        }
+        
+        // Function to hide error
+        function hideError() {
+            document.getElementById('errorContainer').style.display = 'none';
+        }
+        
+        // Main initialization function
+        async function init() {
+            try {
+                // Show loading
+                document.getElementById('loadingContainer').style.display = 'block';
+                
+                // Get and decode URL parameters
+                const params = getUrlParameters();
+                
+                // Display decoded parameters
+                document.getElementById('decodedParams').textContent = 
+                    `Sales Order No.: ${params.salesOrderNo} | Item No.: ${params.itemNo}`;
+                
+                // Hide error if any
+                hideError();
+                
+                // Fetch data from GAS
+                const productData = await fetchProductData(params.salesOrderNo, params.itemNo);
+                
+                // Check if data was found
+                if (productData.error) {
+                    throw new Error(productData.error);
+                }
+                
+                // Format the item name by combining main and sub with a line break
+                if (productData.itemNameMain && productData.itemNameSub) {
+                    productData.itemName = `${productData.itemNameMain}<br>${productData.itemNameSub}`;
+                } else if (productData.itemNameMain) {
+                    productData.itemName = productData.itemNameMain;
+                } else {
+                    productData.itemName = 'Not available';
+                }
+                
+                // Add the original sales order and item number to the data
+                productData.salesOrderNo = params.salesOrderNo;
+                productData.itemNo = params.itemNo;
+                
+                // Display the data
+                displayData(productData);
+                
+                // Hide loading
+                document.getElementById('loadingContainer').style.display = 'none';
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showError('Error Loading Data', error.message);
+            }
+        }
+        
+        // Start the application when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
