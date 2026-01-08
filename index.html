@@ -245,7 +245,7 @@
         // Function to fetch data from Google Apps Script
         async function fetchProductData(salesOrderNo, itemNo) {
             // Replace with your deployed GAS web app URL
-            const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbyjfwYQgKS96Ow4DrPQzTJG03jHr0uxMZT1-09FFSeNYnHwwrCZADpCvnlh-YsduuW1/exec';
+            const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbzklJX7u8ttZ3EXXQ-ZS9xMWo8gdeoNOz58tBKzr9u73mnrG3KfdXSjPxkT-tdc2OYt/exec';
             
             const response = await fetch(`${gasWebAppUrl}?salesOrderNo=${encodeURIComponent(salesOrderNo)}&itemNo=${encodeURIComponent(itemNo)}`);
             
@@ -321,12 +321,15 @@
                 hideError();
                 
                 // Fetch data from GAS
-                const productData = await fetchProductData(params.salesOrderNo, params.itemNo);
+                const result = await fetchProductData(params.salesOrderNo, params.itemNo);
                 
                 // Check if data was found
-                if (productData.error) {
-                    throw new Error(productData.error);
+                if (result.error) {
+                    throw new Error(result.error);
                 }
+                
+                // Get the data object (it might be nested in result.data)
+                const productData = result.data || result;
                 
                 // Format the item name by combining main and sub with a line break
                 if (productData.itemNameMain && productData.itemNameSub) {
