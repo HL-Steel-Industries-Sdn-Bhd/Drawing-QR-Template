@@ -99,6 +99,14 @@
         box-shadow: 0 0 0 2px rgba(102,126,234,0.1);
     }
     
+    /* Item Name特殊样式 - 支持多行显示 */
+    .form-value.multiline {
+        flex-direction: column;
+        align-items: flex-start;
+        min-height: 60px;
+        line-height: 1.4;
+    }
+    
     /* 新增：倒计时/超时框样式 */
     .countdown-container {
         display: flex;
@@ -719,7 +727,7 @@
         display: block;
     }
     
-    /* 新增：扫描器控制按钮 */
+    /* 新增：扫描器控制按钮 - 移除绿色，改用蓝色 */
     .scanner-controls {
         display: flex;
         gap: 10px;
@@ -729,28 +737,43 @@
     }
     
     .scanner-btn {
-        padding: 10px 20px;
+        padding: 12px 25px;
         border: none;
         border-radius: 6px;
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s;
-        background: #4CAF50;
+        background: #667eea;
         color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
     }
     
     .scanner-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        background: #5a6fd8;
     }
     
     .scanner-btn.stop {
         background: #f44336;
     }
     
+    .scanner-btn.stop:hover {
+        background: #e53935;
+        box-shadow: 0 5px 15px rgba(244,67,54,0.4);
+    }
+    
     .scanner-btn.switch {
         background: #2196F3;
+    }
+    
+    .scanner-btn.switch:hover {
+        background: #1e88e5;
+        box-shadow: 0 5px 15px rgba(33,150,243,0.4);
     }
     
     /* 新增：员工欢迎信息 */
@@ -958,38 +981,10 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
-    
-    /* 解码参数显示 */
-    .decoded-info {
-        background-color: #f8f9fa;
-        padding: 12px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        border: 1px dashed #bdc3c7;
-    }
-    
-    .decoded-title {
-        font-weight: 600;
-        color: #7f8c8d;
-        margin-bottom: 5px;
-        font-size: 14px;
-    }
-    
-    .decoded-value {
-        font-weight: 700;
-        color: #2c3e50;
-        font-size: 1rem;
-    }
 </style>
 </head>
 <body>
 <div class="container">
-  <!-- 解码参数显示 -->
-  <div class="decoded-info">
-    <div class="decoded-title">Decoded URL Parameters</div>
-    <div id="decodedParams" class="decoded-value">Loading...</div>
-  </div>
-  
   <!-- 错误显示 -->
   <div class="error-container" id="errorContainer">
     <div class="error-title" id="errorTitle">Error Title</div>
@@ -1042,7 +1037,7 @@
                     </div>
                     <div class="form-group">
                         <div class="form-label">Item Name</div>
-                        <div class="form-value" id="itemName">Loading...</div>
+                        <div class="form-value multiline" id="itemName">Loading...</div>
                     </div>
                     <div class="form-group full-width">
                         <div class="form-label">Dimension</div>
@@ -1081,13 +1076,13 @@
             <!-- 扫描器控制按钮 -->
             <div class="scanner-controls" id="scannerControls">
                 <button class="scanner-btn" id="startScanner" onclick="startQRScanner()">
-                    📷 Start Camera
+                    <span>📷</span> Start Camera
                 </button>
                 <button class="scanner-btn stop" id="stopScanner" onclick="stopQRScanner()" style="display: none;">
-                    ❌ Stop Camera
+                    <span>❌</span> Stop Camera
                 </button>
                 <button class="scanner-btn switch" id="switchCamera" onclick="switchCamera()" style="display: none;">
-                    🔄 Switch Camera
+                    <span>🔄</span> Switch Camera
                 </button>
             </div>
             
@@ -1106,10 +1101,7 @@
                     <p style="color: #888; font-size: 14px; margin-bottom: 20px;">
                         Click "Start Camera" to begin scanning
                     </p>
-                    <button id="startScannerBtn" onclick="startQRScanner()" 
-                            style="padding: 12px 30px; background: #667eea; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer;">
-                        Start Camera
-                    </button>
+                    <!-- 注意：移除了这里的蓝色按钮，因为上面已经有蓝色按钮了 -->
                     <div class="scanner-status">
                         <div style="margin-top: 15px; font-size: 13px; color: #888;">
                             Supports both front and back cameras
@@ -1449,13 +1441,23 @@ function hideError() {
     document.getElementById('errorContainer').style.display = 'none';
 }
 
-// Function to display product data in form
+// Function to display product data in form - 修复Item Name显示问题
 function displayProductData(data) {
     // Update all form fields
     document.getElementById('salesOrderNo').textContent = data.salesOrderNo || 'Not available';
     document.getElementById('itemNo').textContent = data.itemNo || 'Not available';
     document.getElementById('customerName').textContent = data.customerName || 'Not available';
-    document.getElementById('itemName').textContent = data.itemName || 'Not available';
+    
+    // 修复Item Name显示问题 - 使用innerHTML来支持换行
+    const itemNameElement = document.getElementById('itemName');
+    if (data.itemName) {
+        itemNameElement.innerHTML = data.itemName; // 使用innerHTML来渲染HTML标签
+        itemNameElement.classList.add('multiline');
+    } else {
+        itemNameElement.textContent = 'Not available';
+        itemNameElement.classList.remove('multiline');
+    }
+    
     document.getElementById('dimension').textContent = data.dimension || 'Not available';
     document.getElementById('quantity').textContent = data.quantity || 'Not available';
     document.getElementById('unitOfMeasurement').textContent = data.unitOfMeasurement || 'Not available';
@@ -1465,7 +1467,7 @@ function displayProductData(data) {
     drawingInfo.salesOrder = data.salesOrderNo;
     drawingInfo.itemNo = data.itemNo;
     drawingInfo.customerName = data.customerName;
-    drawingInfo.itemName = data.itemName;
+    drawingInfo.itemName = data.itemName ? data.itemName.replace(/<br>/g, ' ') : 'Not available'; // 用于文本显示
     drawingInfo.dimension = data.dimension;
     drawingInfo.quantity = data.quantity;
     drawingInfo.unit = data.unitOfMeasurement;
@@ -2383,10 +2385,6 @@ async function init() {
         // 获取并解码URL参数
         const params = getUrlParameters();
         
-        // 显示解码的参数
-        document.getElementById('decodedParams').textContent = 
-            `Sales Order No.: ${params.salesOrderNo} | Item No.: ${params.itemNo}`;
-        
         // 隐藏错误信息
         hideError();
         
@@ -2404,7 +2402,7 @@ async function init() {
             // 获取数据对象
             const productData = result.data || result;
             
-            // 格式化项目名称
+            // 修复Item Name显示 - 正确格式化
             if (productData.itemNameMain && productData.itemNameSub) {
                 productData.itemName = `${productData.itemNameMain}<br>${productData.itemNameSub}`;
             } else if (productData.itemNameMain) {
@@ -2432,7 +2430,7 @@ async function init() {
                 salesOrderNo: params.salesOrderNo,
                 itemNo: params.itemNo,
                 customerName: 'Demo Customer',
-                itemName: 'Demo Product',
+                itemName: 'Demo Product<br>Demo Sub Product', // 使用<br>标签
                 dimension: 'L 870mm x W 760mm x H 50mm',
                 quantity: '1',
                 unitOfMeasurement: 'Set',
@@ -2470,7 +2468,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 获取扫描控制元素
     cameraInstruction = document.getElementById("cameraInstruction");
-    startScannerBtn = document.getElementById("startScannerBtn");
+    startScannerBtn = document.getElementById("startScanner");
     stopScannerBtn = document.getElementById("stopScanner");
     switchCameraBtn = document.getElementById("switchCamera");
     
