@@ -459,6 +459,16 @@
             display: flex;
             flex-direction: column;
         }
+        
+        /* 电脑版专用：防止滚动跳动 */
+        .content-frame {
+            overflow-anchor: none !important;
+            contain: layout style paint;
+        }
+        
+        .option-item {
+            transform: translateZ(0);
+        }
     }
     
     /* 手机版布局 - 移除固定定位 */
@@ -684,6 +694,10 @@
         box-sizing: border-box;
         cursor: text !important;
         pointer-events: auto !important;
+        user-select: auto !important;
+        -webkit-user-select: auto !important;
+        -moz-user-select: auto !important;
+        -ms-user-select: auto !important;
     }
     
     /* 密码输入区域 */
@@ -716,6 +730,10 @@
         box-sizing: border-box;
         cursor: text !important;
         pointer-events: auto !important;
+        user-select: auto !important;
+        -webkit-user-select: auto !important;
+        -moz-user-select: auto !important;
+        -ms-user-select: auto !important;
     }
     
     .password-input button {
@@ -1036,11 +1054,16 @@
     .clickable-input {
         pointer-events: auto !important;
         cursor: text !important;
+        user-select: auto !important;
+        -webkit-user-select: auto !important;
+        -moz-user-select: auto !important;
+        -ms-user-select: auto !important;
     }
     
     #deficiencyInput input:focus,
     .password-input input:focus,
-    .quantity-input-container input:focus {
+    .quantity-input-container input:focus,
+    #jobCompletedQuantity:focus {
         border-color: #667eea !important;
         outline: none !important;
         box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
@@ -1102,6 +1125,37 @@
         width: 0;
         height: 0;
         border: none;
+    }
+    
+    /* ========== 电脑版滚动修复CSS ========== */
+    /* 电脑版：防止content-frame内部滚动位置重置 */
+    @media (min-width: 768px) {
+        .content-frame {
+            /* 关键修复：禁用浏览器自动滚动重置 */
+            overflow-anchor: none !important;
+            /* 防止任何自动滚动行为 */
+            scroll-behavior: auto !important;
+            /* 提高渲染性能 */
+            contain: layout style paint;
+            will-change: transform;
+        }
+        
+        /* 确保选项点击不会引起滚动重置 */
+        .option-item, .custom-radio, .option-label {
+            /* 强制硬件加速，防止布局抖动 */
+            transform: translateZ(0);
+            /* 禁用文本选择（防止拖拽引起滚动） */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        /* 允许输入框可以选择文本 */
+        #deficiencyText, #jobCompletedQuantity, #qcPassword {
+            user-select: auto !important;
+            -webkit-user-select: auto !important;
+        }
     }
 </style>
 </head>
@@ -1867,6 +1921,66 @@ function isMobile() {
     return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
+// ========== 修复滚动位置问题的变量 ==========
+let isSwitchingCard = false; // 标记是否正在切换卡片（内容重置是预期的）
+
+// ========== 核心修复：content-frame内部滚动位置保持 ==========
+// 保存content-frame的滚动位置
+function saveFrameScrollPosition() {
+    const contentFrame = document.getElementById('contentFrame');
+    if (!contentFrame) return null;
+    
+    return {
+        scrollTop: contentFrame.scrollTop,
+        clientHeight: contentFrame.clientHeight,
+        scrollHeight: contentFrame.scrollHeight,
+        timestamp: Date.now()
+    };
+}
+
+// 恢复content-frame的滚动位置
+function restoreFrameScrollPosition(savedPosition) {
+    const contentFrame = document.getElementById('contentFrame');
+    if (!contentFrame || !savedPosition) return;
+    
+    // 立即恢复
+    contentFrame.scrollTop = savedPosition.scrollTop;
+    
+    // 双保险：在下一帧再恢复一次
+    requestAnimationFrame(() => {
+        contentFrame.scrollTop = savedPosition.scrollTop;
+    });
+}
+
+// ========== 电脑版滚动位置保存/恢复函数 ==========
+// 保存滚动位置（只针对电脑版）
+function saveScrollPosition() {
+    if (isMobileDevice) return null;
+    
+    const contentFrame = document.getElementById('contentFrame');
+    if (!contentFrame) return null;
+    
+    return {
+        scrollTop: contentFrame.scrollTop,
+        timestamp: Date.now()
+    };
+}
+
+// 恢复滚动位置（只针对电脑版）
+function restoreScrollPosition(savedPosition) {
+    if (isMobileDevice || !savedPosition) return;
+    
+    const contentFrame = document.getElementById('contentFrame');
+    if (!contentFrame) return;
+    
+    // 使用双requestAnimationFrame确保在下一帧恢复滚动
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            contentFrame.scrollTop = savedPosition.scrollTop;
+        });
+    });
+}
+
 // ========== 二维码扫描功能 ==========
 async function startQRScanner() {
     try {
@@ -2220,6 +2334,9 @@ function initCards() {
                 return;
             }
             
+            // 标记为切换卡片
+            isSwitchingCard = true;
+            
             // 自动清除之前页面的选择
             clearOtherPagesSelections(newIndex);
             
@@ -2369,9 +2486,16 @@ function clearAllSelections() {
     updateCardUserSelections();
 }
 
+// ========== 修改renderCardContent函数 ==========
 function renderCardContent() {
     const contentFrame = document.getElementById('contentFrame');
     const currentCard = cardContents[currentCardIndex];
+    
+    // 保存当前滚动位置（如果是切换卡片，允许重置）
+    let savedScroll = null;
+    if (!isSwitchingCard && contentFrame) {
+        savedScroll = saveFrameScrollPosition();
+    }
     
     let contentHTML = `<div class="frame-title">${currentCard.title}</div>`;
     
@@ -2387,7 +2511,7 @@ function renderCardContent() {
                 ${currentCard.frames[1].hasInput ? `
                     <div id="deficiencyInput" style="margin-top: 12px; display: none;">
                         <div style="margin-bottom: 6px; font-weight: 500; color: #555;">Deficiency Details (不足之处详情):</div>
-                        <input type="text" id="deficiencyText" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;" placeholder="Enter deficiency details here...">
+                        <input type="text" id="deficiencyText" class="clickable-input" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;" placeholder="Enter deficiency details here...">
                     </div>
                 ` : ''}
             </div>
@@ -2413,7 +2537,7 @@ function renderCardContent() {
                         <input type="text" id="jobCompletedQuantity" class="clickable-input" 
                                placeholder="Enter quantity here..." 
                                value="${jobCompletedQuantity}"
-                               oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                               oninput="handleQuantityInput(this)">
                     </div>
                 </div>
             `;
@@ -2450,9 +2574,18 @@ function renderCardContent() {
     if (currentCardIndex === 1 && !JOB_COMPLETED_USERS_NO_QUANTITY.includes(currentUser)) {
         const quantityInput = document.getElementById('jobCompletedQuantity');
         if (quantityInput) {
-            quantityInput.addEventListener('input', function(e) {
-                jobCompletedQuantity = this.value;
-                updateSubmitButton();
+            // 确保输入框可以获得焦点
+            quantityInput.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.focus();
+            });
+            
+            quantityInput.addEventListener('focus', function(e) {
+                e.stopPropagation();
+            });
+            
+            quantityInput.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
             });
             
             // 恢复之前输入的值
@@ -2463,6 +2596,140 @@ function renderCardContent() {
     }
     
     updateSubmitButton();
+    
+    // 恢复滚动位置（如果不是切换卡片）
+    if (!isSwitchingCard && savedScroll) {
+        restoreFrameScrollPosition(savedScroll);
+    }
+    
+    isSwitchingCard = false;
+}
+
+// ========== 修改addOptionListeners函数 ==========
+function addOptionListeners() {
+    // 移除旧的事件监听器（防止重复）
+    document.removeEventListener('click', optionClickHandler);
+    
+    // 定义新的点击处理器
+    function optionClickHandler(e) {
+        let optionItem = e.target.closest('.option-item');
+        if (!optionItem && e.target.classList.contains('custom-radio')) {
+            optionItem = e.target.closest('.option-item');
+        }
+        
+        if (optionItem) {
+            // 阻止所有默认行为
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            
+            // 保存content-frame的滚动位置
+            const savedScroll = saveFrameScrollPosition();
+            
+            const optionId = optionItem.getAttribute('data-id');
+            const category = optionItem.getAttribute('data-category');
+            
+            // 更新选择
+            selectedOptions[category] = optionId;
+            
+            // 只更新样式，不重新渲染
+            updateOptionStyles(category, optionId);
+            
+            // 处理特殊情况（显示输入框）
+            if (optionId === 'rf2-2') {
+                const deficiencyInput = document.getElementById('deficiencyInput');
+                if (deficiencyInput) {
+                    deficiencyInput.style.display = 'block';
+                    setTimeout(() => {
+                        const deficiencyText = document.getElementById('deficiencyText');
+                        if (deficiencyText) {
+                            deficiencyText.focus();
+                            // 恢复滚动位置
+                            restoreFrameScrollPosition(savedScroll);
+                        }
+                    }, 50);
+                }
+            } else if (category === 'receivedFrom2') {
+                const deficiencyInput = document.getElementById('deficiencyInput');
+                if (deficiencyInput) deficiencyInput.style.display = 'none';
+            }
+            
+            updateCardUserSelections();
+            updateSubmitButton();
+            
+            // 恢复滚动位置
+            restoreFrameScrollPosition(savedScroll);
+            
+            return false;
+        }
+    }
+    
+    // 使用捕获阶段，确保最早执行
+    document.addEventListener('click', optionClickHandler, true);
+}
+
+// ========== 修改updateOptionStyles函数 ==========
+function updateOptionStyles(category, selectedId) {
+    // 这个方法只更新样式，不重新渲染整个content-frame
+    // 所以不会导致滚动位置重置
+    
+    const options = document.querySelectorAll(`.option-item[data-category="${category}"]`);
+    
+    for (let i = 0; i < options.length; i++) {
+        const item = options[i];
+        const radio = item.querySelector('.custom-radio');
+        const isSelected = item.getAttribute('data-id') === selectedId;
+        
+        // 只更新类名，不改变DOM结构
+        if (isSelected) {
+            if (!item.classList.contains('selected')) {
+                item.classList.add('selected');
+            }
+            if (radio && !radio.classList.contains('selected')) {
+                radio.classList.add('selected');
+            }
+        } else {
+            if (item.classList.contains('selected')) {
+                item.classList.remove('selected');
+            }
+            if (radio && radio.classList.contains('selected')) {
+                radio.classList.remove('selected');
+            }
+        }
+    }
+}
+
+// ========== 修改handleQuantityInput函数 ==========
+function handleQuantityInput(input) {
+    // 保存滚动位置
+    const savedScroll = saveFrameScrollPosition();
+    
+    input.value = input.value.replace(/[^0-9]/g, '');
+    jobCompletedQuantity = input.value;
+    updateSubmitButton();
+    
+    // 恢复滚动位置
+    restoreFrameScrollPosition(savedScroll);
+}
+
+// ========== 修改checkQCPassword函数 ==========
+function checkQCPassword() {
+    const passwordInput = document.getElementById('qcPassword');
+    const passwordError = document.getElementById('passwordError');
+    
+    // 保存滚动位置
+    const savedScroll = saveFrameScrollPosition();
+    
+    if (passwordInput && passwordInput.value === '1234') {
+        qcUnlocked = true;
+        isSwitchingCard = true; // 标记为切换内容
+        renderCardContent();
+    } else {
+        if (passwordError) passwordError.style.display = 'block';
+        if (passwordInput) passwordInput.value = '';
+        // 恢复滚动位置
+        restoreFrameScrollPosition(savedScroll);
+    }
 }
 
 function renderOptions(options, category) {
@@ -2482,77 +2749,6 @@ function renderOptions(options, category) {
     return html;
 }
 
-function addOptionListeners() {
-    document.addEventListener('click', function(e) {
-        let optionItem = e.target.closest('.option-item');
-        if (!optionItem && e.target.classList.contains('custom-radio')) {
-            optionItem = e.target.closest('.option-item');
-        }
-        
-        if (optionItem) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const optionId = optionItem.getAttribute('data-id');
-            const category = optionItem.getAttribute('data-category');
-            
-            selectedOptions[category] = optionId;
-            updateOptionStyles(category, optionId);
-            
-            if (optionId === 'rf2-2') {
-                const deficiencyInput = document.getElementById('deficiencyInput');
-                if (deficiencyInput) {
-                    deficiencyInput.style.display = 'block';
-                    setTimeout(() => {
-                        const deficiencyText = document.getElementById('deficiencyText');
-                        if (deficiencyText) deficiencyText.focus();
-                    }, 50);
-                }
-            } else if (category === 'receivedFrom2') {
-                const deficiencyInput = document.getElementById('deficiencyInput');
-                if (deficiencyInput) deficiencyInput.style.display = 'none';
-            }
-            
-            updateCardUserSelections();
-            updateSubmitButton();
-            
-            return false;
-        }
-    });
-    
-    document.addEventListener('mousedown', function(e) {
-        if (e.target.id === 'qcPassword' || e.target.id === 'deficiencyText' || e.target.id === 'jobCompletedQuantity') {
-            e.stopPropagation();
-            e.preventDefault();
-            e.target.focus();
-        }
-    }, true);
-    
-    document.addEventListener('click', function(e) {
-        if (e.target.tagName === 'BUTTON' && e.target.textContent.includes('Unlock')) {
-            e.preventDefault();
-            e.stopPropagation();
-            checkQCPassword();
-            return false;
-        }
-    });
-}
-
-function updateOptionStyles(category, selectedId) {
-    document.querySelectorAll(`.option-item[data-category="${category}"]`).forEach(item => {
-        item.classList.remove('selected');
-        const radio = item.querySelector('.custom-radio');
-        if (radio) radio.classList.remove('selected');
-    });
-    
-    const selectedItem = document.querySelector(`.option-item[data-id="${selectedId}"]`);
-    if (selectedItem) {
-        selectedItem.classList.add('selected');
-        const radio = selectedItem.querySelector('.custom-radio');
-        if (radio) radio.classList.add('selected');
-    }
-}
-
 function restoreSelectedOptions() {
     Object.keys(selectedOptions).forEach(category => {
         const optionId = selectedOptions[category];
@@ -2565,19 +2761,6 @@ function restoreSelectedOptions() {
             }
         }
     });
-}
-
-function checkQCPassword() {
-    const passwordInput = document.getElementById('qcPassword');
-    const passwordError = document.getElementById('passwordError');
-    
-    if (passwordInput && passwordInput.value === '1234') {
-        qcUnlocked = true;
-        renderCardContent();
-    } else {
-        if (passwordError) passwordError.style.display = 'block';
-        if (passwordInput) passwordInput.value = '';
-    }
 }
 
 function updateSubmitButton() {
@@ -2922,6 +3105,14 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             if (scannerInput) scannerInput.focus();
         }, 500);
+    }
+    
+    // 添加content-frame的滚动监听（调试用）
+    const contentFrame = document.getElementById('contentFrame');
+    if (contentFrame) {
+        contentFrame.addEventListener('scroll', function() {
+            console.log('content-frame scrollTop:', this.scrollTop);
+        });
     }
 });
 </script>
