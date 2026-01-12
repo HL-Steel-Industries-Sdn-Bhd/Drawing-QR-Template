@@ -99,14 +99,6 @@
         box-shadow: 0 0 0 2px rgba(102,126,234,0.1);
     }
     
-    /* Item Name特殊样式 - 支持多行显示 */
-    .form-value.multiline {
-        flex-direction: column;
-        align-items: flex-start;
-        min-height: 60px;
-        line-height: 1.4;
-    }
-    
     /* 新增：倒计时/超时框样式 */
     .countdown-container {
         display: flex;
@@ -278,56 +270,160 @@
         border-radius: 4px;
     }
     
-    /* GIF容器 */
-    .gif-container {
-        text-align: center;
-        margin-top: auto;
-        padding-top: 15px;
-        border-top: 1px solid #eee;
-    }
-    
-    .gif-container p {
-        margin-bottom: 10px;
-        color:#555;
-        font-size: 14px;
-    }
-    
-    .gif-container img {
-        width: 130px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
     /* 工作资料部分 */
     .work-section {
         display: none;
     }
     
-    /* 用户信息显示 */
-    #userDisplay {
-        background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-        color: white;
-        padding: 15px;
-        border-radius: 6px;
-        margin-bottom: 25px;
-        font-size: 1.2rem;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(102,126,234,0.3);
-        font-weight: 600;
+    /* 第二页顶部固定头部样式 - 修改手机版 */
+    .work-top-header {
+        background: white;
+        padding: 15px 0;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     }
     
-    /* 新增：图纸信息串联框 */
-    #drawingInfoSummary {
-        background: #f8f9fa;
-        border: 2px solid #ddd;
+    @media (min-width: 768px) {
+        .work-top-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+    }
+    
+    /* 用户和时间并排布局 */
+    .user-time-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+    
+    @media (max-width: 767px) {
+        .user-time-container {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+    }
+    
+    /* 修改：Current User显示改为一行 */
+    .user-display-box {
+        padding: 6px;
         border-radius: 8px;
-        padding: 15px;
-        margin: 15px 0 25px 0;
-        font-size: 16px;
-        color: #333;
-        line-height: 1.5;
+        font-size: 1.1rem;
         text-align: center;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        font-weight: 600;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 2px solid transparent;
+    }
+    
+    .user-display-box.current-user {
+        background: rgba(102, 126, 234, 0.1);
+        border-color: #667eea;
+        color: #333;
+    }
+    
+    /* Current User显示为一行 */
+    .current-user .user-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0; /* 移除下边距 */
+    }
+    
+    .current-user .user-label {
+        display: none; /* 隐藏"Current User"标签 */
+    }
+    
+    .time-display-box {
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        text-align: center;
+        font-weight: 600;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 2px solid transparent;
+    }
+    
+    .time-display-box.future {
+        background: rgba(76, 175, 80, 0.1);
+        border-color: #4CAF50;
+    }
+    
+    .time-display-box.past {
+        background: rgba(244, 67, 54, 0.1);
+        border-color: #f44336;
+    }
+    
+    .time-value, .user-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+    
+    .time-label, .user-label {
+        font-size: 0.75rem;
+        opacity: 0.9;
+    }
+    
+    .time-negative {
+        color: #f44336;
+        animation: pulse 2s infinite;
+    }
+    
+    .time-positive {
+        color: #4CAF50;
+    }
+    
+    /* 重新设计图纸信息串联框 */
+    .drawing-info-summary {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 14px;
+        color: #333;
+        line-height: 1.4;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid #ddd;
+        margin-bottom: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    .info-item {
+        display: inline-flex;
+        align-items: center;
+        background: white;
+        padding: 3px 8px;
+        border-radius: 15px;
+        border: 1px solid #ddd;
+        font-size: 12px;
+        margin: 1px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #667eea;
+        margin-right: 3px;
+        font-size: 11px;
+    }
+    
+    .info-separator {
+        color: #999;
+        font-weight: bold;
+        margin: 0 3px;
+        font-size: 11px;
     }
     
     /* 电脑版新布局 */
@@ -335,7 +431,7 @@
         .work-main-container {
             display: grid;
             grid-template-columns: 250px 1fr 300px;
-            gap: 30px;
+            gap: 20px;
             align-items: start;
             position: relative;
         }
@@ -345,7 +441,7 @@
             flex-direction: column;
             gap: 15px;
             position: sticky;
-            top: 20px;
+            top: 150px;
             transition: top 0.3s ease;
             z-index: 10;
             align-self: flex-start;
@@ -353,7 +449,7 @@
         
         .info-sidebar {
             position: sticky;
-            top: 20px;
+            top: 150px;
             transition: top 0.3s ease;
             z-index: 10;
             align-self: flex-start;
@@ -365,7 +461,7 @@
         }
     }
     
-    /* 手机版布局 */
+    /* 手机版布局 - 移除固定定位 */
     @media (max-width: 767px) {
         .work-main-container {
             display: flex;
@@ -374,7 +470,9 @@
         
         .cards-section {
             order: 3;
-            margin-top: 30px;
+            margin-top: 20px;
+            position: relative !important;
+            top: auto !important;
         }
         
         .stack-section {
@@ -383,7 +481,9 @@
         
         .info-sidebar {
             order: 2;
-            margin-top: 20px;
+            margin-top: 15px;
+            position: relative !important;
+            top: auto !important;
         }
     }
     
@@ -401,8 +501,8 @@
         transition: all 0.3s ease;
         color: #333;
         text-align: center;
-        padding: 20px;
-        height: 140px;
+        padding: 15px;
+        height: 120px;
         border: 2px solid transparent;
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         position: relative;
@@ -425,44 +525,44 @@
     .c3 { background: #EBD8FF; } /* 紫色 - Quality Control */
     
     .card-english {
-        font-size: 20px;
-        margin-bottom: 5px;
+        font-size: 18px;
+        margin-bottom: 3px;
     }
     
     .card-chinese {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: normal;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
     
     /* 用户选择显示 */
     .user-selection {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: normal;
         color: #333;
         background: rgba(255, 255, 255, 0.9);
-        padding: 5px 10px;
+        padding: 4px 8px;
         border-radius: 4px;
-        margin-top: 5px;
+        margin-top: 3px;
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        height: 24px;
-        min-width: 180px;
+        height: 20px;
+        min-width: 150px;
         text-align: center;
         border: 1px solid rgba(0,0,0,0.1);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     
     /* 内容iframe区域 */
     .content-frame {
         width: 100%;
-        min-height: 400px;
+        min-height: 350px;
         border-radius: 10px;
         border: 2px solid #ddd;
         background: #fff;
-        padding: 25px;
+        padding: 20px;
         overflow-y: auto;
     }
     
@@ -471,11 +571,11 @@
     }
     
     .frame-title {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 600;
         color: #333;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
         border-bottom: 2px solid #667eea;
     }
     
@@ -483,8 +583,8 @@
     .option-item {
         display: flex;
         align-items: flex-start;
-        margin-bottom: 12px;
-        padding: 12px;
+        margin-bottom: 10px;
+        padding: 10px;
         border-radius: 8px;
         transition: all 0.2s;
         background: #f9f9f9;
@@ -505,10 +605,10 @@
     
     /* 完全自定义单选按钮 */
     .custom-radio {
-        margin-right: 12px;
-        margin-top: 3px;
-        width: 18px;
-        height: 18px;
+        margin-right: 10px;
+        margin-top: 2px;
+        width: 16px;
+        height: 16px;
         border: 2px solid #667eea;
         border-radius: 50%;
         background: white;
@@ -523,8 +623,8 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 8px;
-        height: 8px;
+        width: 7px;
+        height: 7px;
         background: #667eea;
         border-radius: 50%;
     }
@@ -535,26 +635,66 @@
     }
     
     .option-english {
-        font-size: 15px;
+        font-size: 14px;
         color: #333;
-        margin-bottom: 3px;
+        margin-bottom: 2px;
         font-weight: 500;
     }
     
     .option-chinese {
-        font-size: 13px;
+        font-size: 12px;
         color: #666;
     }
     
-    /* 密码输入区域 */
-    .password-section {
-        margin-top: 20px;
-        padding: 20px;
+    /* 数量输入框样式 */
+    .quantity-section {
+        margin-top: 15px;
+        padding: 15px;
         background: #f9f9f9;
         border-radius: 8px;
         border: 1px solid #ddd;
         width: 100%;
-        max-width: 400px;
+        max-width: 350px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .quantity-input-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+        width: 100%;
+    }
+    
+    .quantity-input-container label {
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 3px;
+        display: block;
+        font-size: 14px;
+    }
+    
+    .quantity-input-container input {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        width: 100%;
+        box-sizing: border-box;
+        cursor: text !important;
+        pointer-events: auto !important;
+    }
+    
+    /* 密码输入区域 */
+    .password-section {
+        margin-top: 15px;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        width: 100%;
+        max-width: 350px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -562,16 +702,16 @@
     .password-input {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
         align-items: stretch;
         width: 100%;
     }
     
     .password-input input {
-        padding: 12px;
+        padding: 10px;
         border: 1px solid #ddd;
         border-radius: 6px;
-        font-size: 16px;
+        font-size: 14px;
         width: 100%;
         box-sizing: border-box;
         cursor: text !important;
@@ -579,7 +719,7 @@
     }
     
     .password-input button {
-        padding: 12px 20px;
+        padding: 10px 15px;
         background: #667eea;
         color: white;
         border: none;
@@ -587,6 +727,7 @@
         cursor: pointer;
         font-weight: 600;
         transition: all 0.3s;
+        font-size: 14px;
     }
     
     .password-input button:hover {
@@ -598,7 +739,7 @@
     .info-sidebar {
         background: #f8f9fa;
         border-radius: 8px;
-        padding: 20px;
+        padding: 15px;
         border-left: 4px solid #667eea;
         box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
@@ -606,35 +747,35 @@
     @media (min-width: 768px) {
         .info-sidebar {
             height: fit-content;
-            max-height: 400px;
+            max-height: 350px;
         }
     }
     
     .sidebar-title {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
         color: #333;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         text-align: center;
     }
     
     .sidebar-item {
-        margin-bottom: 15px;
+        margin-bottom: 12px;
     }
     
     .sidebar-label {
         font-weight: 500;
         color: #555;
-        margin-bottom: 5px;
-        font-size: 14px;
+        margin-bottom: 3px;
+        font-size: 13px;
     }
     
     .sidebar-value {
-        font-size: 15px;
+        font-size: 14px;
         color: #333;
         font-weight: 500;
         background: white;
-        padding: 8px 12px;
+        padding: 6px 10px;
         border-radius: 6px;
         border: 1px solid #eee;
     }
@@ -642,8 +783,8 @@
     /* 提交按钮 */
     .submit-section {
         text-align: center;
-        margin-top: 30px;
-        padding-top: 20px;
+        margin-top: 20px;
+        padding-top: 15px;
         border-top: 1px solid #eee;
     }
     
@@ -651,13 +792,13 @@
         background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); 
         color:white; 
         border:none;
-        padding:14px 40px; 
+        padding:12px 30px; 
         border-radius:6px; 
-        font-size:16px; 
+        font-size:15px; 
         font-weight:600; 
         cursor:pointer; 
         transition:all 0.3s; 
-        min-width: 200px;
+        min-width: 180px; 
     }
     
     .submit-btn:hover:not(:disabled) { 
@@ -675,13 +816,14 @@
     }
     
     .success-message {
-        margin-top: 15px;
-        padding: 12px;
+        margin-top: 12px;
+        padding: 10px;
         background: #d4edda;
         color: #155724;
         border-radius: 6px;
         border: 1px solid #c3e6cb;
         display: none;
+        font-size: 14px;
     }
     
     /* 隐藏的扫码输入框 */
@@ -696,23 +838,23 @@
         .container { padding:15px; }
         h2 { font-size:22px; margin-bottom:15px; }
         .content-frame {
-            min-height: 350px;
+            min-height: 300px;
             padding: 15px;
         }
         .card-box {
-            height: 130px;
-            padding: 15px;
+            height: 110px;
+            padding: 12px;
         }
         .card-english {
-            font-size: 18px;
+            font-size: 16px;
         }
         .card-chinese {
-            font-size: 14px;
+            font-size: 13px;
         }
         .user-selection {
-            font-size: 12px;
-            padding: 3px 6px;
-            min-width: 150px;
+            font-size: 11px;
+            padding: 2px 5px;
+            min-width: 130px;
         }
         .form-grid {
             grid-template-columns: 1fr;
@@ -730,17 +872,17 @@
     /* 新增：扫描器控制按钮 - 移除绿色，改用蓝色 */
     .scanner-controls {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         justify-content: center;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
         flex-wrap: wrap;
     }
     
     .scanner-btn {
-        padding: 12px 25px;
+        padding: 10px 20px;
         border: none;
         border-radius: 6px;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s;
@@ -749,7 +891,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 6px;
     }
     
     .scanner-btn:hover {
@@ -780,31 +922,31 @@
     .employee-welcome {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 15px;
+        padding: 12px;
         border-radius: 8px;
-        margin: 15px 0;
+        margin: 12px 0;
         text-align: center;
         display: none;
     }
     
     .welcome-text {
-        font-size: 16px;
+        font-size: 14px;
         color: rgba(255,255,255,0.9);
     }
     
     .employee-name {
-        font-size: 22px;
+        font-size: 18px;
         font-weight: 600;
-        margin-top: 5px;
+        margin-top: 3px;
     }
     
     /* 新增：扫描状态指示器 */
     .scanning-status {
         display: inline-block;
-        width: 12px;
-        height: 12px;
+        width: 10px;
+        height: 10px;
         border-radius: 50%;
-        margin-right: 8px;
+        margin-right: 6px;
         background-color: #4CAF50;
         animation: pulse 1.5s infinite;
     }
@@ -831,43 +973,44 @@
     
     .modal-content {
         background: white;
-        padding: 30px;
+        padding: 20px;
         border-radius: 15px;
         text-align: center;
-        max-width: 500px;
+        max-width: 450px;
         width: 90%;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
     
     .modal h3 {
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         color: #2c3e50;
-        font-size: 24px;
+        font-size: 20px;
     }
     
     .modal p {
-        margin-bottom: 15px;
+        margin-bottom: 12px;
         color: #555;
         line-height: 1.5;
         text-align: left;
+        font-size: 14px;
     }
     
     .modal-buttons {
         display: flex;
-        gap: 15px;
+        gap: 12px;
         justify-content: center;
-        margin-top: 25px;
+        margin-top: 20px;
     }
     
     .modal-btn {
-        padding: 12px 30px;
+        padding: 10px 25px;
         border: none;
         border-radius: 8px;
         font-weight: bold;
         cursor: pointer;
         transition: all 0.3s ease;
-        font-size: 16px;
-        min-width: 120px;
+        font-size: 14px;
+        min-width: 100px;
     }
     
     .modal-btn.yes {
@@ -896,7 +1039,8 @@
     }
     
     #deficiencyInput input:focus,
-    .password-input input:focus {
+    .password-input input:focus,
+    .quantity-input-container input:focus {
         border-color: #667eea !important;
         outline: none !important;
         box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
@@ -904,69 +1048,38 @@
     
     /* 电脑版摄像头样式 */
     .camera-instruction {
-        font-size: 14px;
+        font-size: 13px;
         color: #2196F3;
-        margin: 10px 0;
+        margin: 8px 0;
         font-weight: 500;
-        padding: 8px 12px;
+        padding: 6px 10px;
         background: rgba(33, 150, 243, 0.1);
         border-radius: 4px;
         display: inline-block;
     }
     
-    /* 新增：倒计时在第二页的样式 */
-    .work-countdown-container {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 25px;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(102,126,234,0.3);
-    }
-    
-    .work-countdown-value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
-    
-    .work-countdown-label {
-        font-size: 0.9rem;
-        opacity: 0.9;
-    }
-    
-    .work-countdown-negative {
-        color: #ff6b6b;
-        animation: pulse 2s infinite;
-    }
-    
-    .work-countdown-positive {
-        color: #51cf66;
-    }
-    
     /* 加载和错误样式 */
     .loading-container {
         text-align: center;
-        padding: 20px;
+        padding: 15px;
         display: none;
     }
     
     .spinner {
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #3498db;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
         border-radius: 50%;
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
         animation: spin 1s linear infinite;
-        margin: 0 auto 15px;
+        margin: 0 auto 10px;
     }
     
     .error-container {
         background-color: #ffeaea;
         border-left: 5px solid #e74c3c;
-        padding: 15px;
-        margin-bottom: 20px;
+        padding: 12px;
+        margin-bottom: 15px;
         border-radius: 5px;
         display: none;
     }
@@ -974,12 +1087,21 @@
     .error-title {
         color: #c0392b;
         font-weight: 600;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
+        font-size: 15px;
     }
     
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+    
+    /* 隐藏的iframe用于表单提交 */
+    .hidden-iframe {
+        display: none;
+        width: 0;
+        height: 0;
+        border: none;
     }
 </style>
 </head>
@@ -1004,7 +1126,7 @@
   <div id="confirmationModal" class="modal">
     <div class="modal-content">
         <h3>Confirm Selection</h3>
-        <div id="modalMessage" style="text-align: left; margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
+        <div id="modalMessage" style="text-align: left; margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
             <!-- 确认信息会动态填充到这里 -->
         </div>
         <div class="modal-buttons">
@@ -1013,6 +1135,22 @@
         </div>
     </div>
   </div>
+
+  <!-- ===== 隐藏表单和iframe用于提交数据 ===== -->
+  <form id="dataForm" method="post" target="hiddenIframe" style="display: none;">
+    <input type="hidden" id="form_timestamp" name="timestamp">
+    <input type="hidden" id="form_name" name="name">
+    <input type="hidden" id="form_action" name="action">
+    <input type="hidden" id="form_received" name="received">
+    <input type="hidden" id="form_check" name="check">
+    <input type="hidden" id="form_jobCompleted" name="jobCompleted">
+    <input type="hidden" id="form_quantity" name="quantity">
+    <input type="hidden" id="form_spreadsheetId" name="spreadsheetId">
+    <input type="hidden" id="form_sheetName" name="sheetName">
+    <input type="hidden" id="form_salesOrderNo" name="salesOrderNo">
+    <input type="hidden" id="form_itemNo" name="itemNo">
+  </form>
+  <iframe name="hiddenIframe" id="hiddenIframe" class="hidden-iframe"></iframe>
 
   <!-- ===== 阶段 1：图纸信息 ===== -->
   <div id="drawingSection" class="section" style="display:block;">
@@ -1037,7 +1175,7 @@
                     </div>
                     <div class="form-group">
                         <div class="form-label">Item Name</div>
-                        <div class="form-value multiline" id="itemName">Loading...</div>
+                        <div class="form-value" id="itemName">Loading...</div>
                     </div>
                     <div class="form-group full-width">
                         <div class="form-label">Dimension</div>
@@ -1065,7 +1203,7 @@
         </div>
         
         <div class="scan-section">
-            <div class="scan-instruction">Please scan your <b>Employee QR Code</b></div>
+            <div class="scan-instruction">Please scan your <b>Credential QR Code</b></div>
             
             <!-- 员工欢迎信息 -->
             <div class="employee-welcome" id="employeeWelcome">
@@ -1073,18 +1211,7 @@
                 <div class="employee-name" id="employeeNameDisplay"></div>
             </div>
             
-            <!-- 扫描器控制按钮 -->
-            <div class="scanner-controls" id="scannerControls">
-                <button class="scanner-btn" id="startScanner" onclick="startQRScanner()">
-                    <span>📷</span> Start Camera
-                </button>
-                <button class="scanner-btn stop" id="stopScanner" onclick="stopQRScanner()" style="display: none;">
-                    <span>❌</span> Stop Camera
-                </button>
-                <button class="scanner-btn switch" id="switchCamera" onclick="switchCamera()" style="display: none;">
-                    <span>🔄</span> Switch Camera
-                </button>
-            </div>
+            <!-- 扫描器控制按钮已移入扫描器区域 -->
             
             <!-- 摄像头扫描提示 -->
             <div class="camera-instruction" id="cameraInstruction" style="display: none;">
@@ -1098,10 +1225,20 @@
                     <p style="color: #666; margin-bottom: 15px; font-size: 16px;">
                         QR Code Scanner Area
                     </p>
-                    <p style="color: #888; font-size: 14px; margin-bottom: 20px;">
-                        Click "Start Camera" to begin scanning
-                    </p>
-                    <!-- 注意：移除了这里的蓝色按钮，因为上面已经有蓝色按钮了 -->
+                    
+                    <!-- 蓝色Start Camera按钮已移入这里 -->
+                    <div class="scanner-controls" id="scannerControls">
+                        <button class="scanner-btn" id="startScanner">
+                            <span>📷</span> Start Camera
+                        </button>
+                        <button class="scanner-btn stop" id="stopScanner" style="display: none;">
+                            <span>❌</span> Stop Camera
+                        </button>
+                        <button class="scanner-btn switch" id="switchCamera" style="display: none;">
+                            <span>🔄</span> Switch Camera
+                        </button>
+                    </div>
+                    
                     <div class="scanner-status">
                         <div style="margin-top: 15px; font-size: 13px; color: #888;">
                             Supports both front and back cameras
@@ -1111,28 +1248,34 @@
                 <video id="scannerVideo" playsinline></video>
                 <canvas id="scannerCanvas"></canvas>
             </div>
-
-            <div class="gif-container" id="gifContainer">
-                <p>Use your scanner to scan the Employee QR Code</p>
-                <img src="https://media.giphy.com/media/3o6ZtaO9BZHcOjmErm/giphy.gif" alt="Scanner GIF">
-            </div>
+            
+            <!-- GIF容器已移除 -->
         </div>
     </div>
   </div>
 
   <!-- ===== 阶段 2：工作数据录入页面 ===== -->
   <div id="workSection" class="section">
-    <h2>📝 Work Data Entry</h2>
+    <!-- 修改：移除标题 "📝 Work Data Entry" -->
     
-    <!-- 第二页顶部的倒计时框 -->
-    <div id="countdownContainer2" class="work-countdown-container">
-        <!-- 倒计时内容会动态填充 -->
+    <!-- 顶部固定头部 -->
+    <div class="work-top-header">
+        <!-- 用户和时间并排显示 -->
+        <div class="user-time-container">
+            <div class="user-display-box current-user" id="userDisplay">
+                <!-- 修改：Current User显示为一行 -->
+                <div class="user-value" id="currentUserName">Current User：Not authenticated</div>
+            </div>
+            <div class="time-display-box" id="countdownContainer2">
+                <!-- 时间内容会动态填充 -->
+            </div>
+        </div>
+        
+        <!-- 重新设计的图纸信息串联框 -->
+        <div class="drawing-info-summary" id="drawingInfoSummary" style="display: none;">
+            <!-- 图纸信息会动态填充 -->
+        </div>
     </div>
-    
-    <div id="userDisplay">Current User: Not authenticated</div>
-    
-    <!-- 图纸信息串联框 -->
-    <div id="drawingInfoSummary" style="display: none;"></div>
     
     <div class="work-main-container">
         <!-- 左侧：卡片选择区域 -->
@@ -1210,36 +1353,38 @@ function getUrlParameters() {
     const encodedData = urlParams.get('H');
     
     if (!encodedData) {
-        // 如果没有URL参数，使用默认值进行演示
-        console.log('No URL parameters found, using default values for demo');
+        // 如果没有URL参数，返回null表示querystring不存在
+        console.log('No URL parameters found');
+        return null;
+    }
+    
+    try {
+        // Decode the base64 parameter
+        const decodedString = decodeBase64(encodedData);
+        
+        // Split by & to get Sales Order No. and Item No.
+        const parts = decodedString.split('&');
+        
+        if (parts.length !== 2) {
+            console.error('Decoded data does not contain Sales Order No. and Item No. separated by &');
+            return null;
+        }
+        
         return {
-            salesOrderNo: 'SO-009999',
-            itemNo: '20',
-            fullString: 'SO-009999&20'
+            salesOrderNo: parts[0],
+            itemNo: parts[1],
+            fullString: decodedString
         };
+    } catch (error) {
+        console.error('Error decoding URL parameters:', error);
+        return null;
     }
-    
-    // Decode the base64 parameter
-    const decodedString = decodeBase64(encodedData);
-    
-    // Split by & to get Sales Order No. and Item No.
-    const parts = decodedString.split('&');
-    
-    if (parts.length !== 2) {
-        throw new Error('Decoded data does not contain Sales Order No. and Item No. separated by &');
-    }
-    
-    return {
-        salesOrderNo: parts[0],
-        itemNo: parts[1],
-        fullString: decodedString
-    };
 }
 
 // Function to fetch data from Google Apps Script
 async function fetchProductData(salesOrderNo, itemNo) {
     // 使用现有的GAS 1 web app URL
-    const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbzklJX7u8ttZ3EXXQ-ZS9xMWo8gdeoNOz58tBKzr9u73mnrG3KfdXSjPxkT-tdc2OYt/exec';
+    const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbz7M9o3i8l1pj2I1DDo4skQuBTJ-k-rRJJrWzwLFy5mTJrgmxAm-vReWNpUk4O6tNAB/exec';
     
     const response = await fetch(`${gasWebAppUrl}?salesOrderNo=${encodeURIComponent(salesOrderNo)}&itemNo=${encodeURIComponent(itemNo)}`);
     
@@ -1252,7 +1397,7 @@ async function fetchProductData(salesOrderNo, itemNo) {
 
 // Function to calculate time difference between EDD (8:00 AM) and now
 function calculateTimeRemaining(eddDateString) {
-    if (!eddDateString || eddDateString === 'N/A' || eddDateString === 'Not available') {
+    if (!eddDateString || eddDateString === 'N/A' || eddDateString === 'Not available' || eddDateString === '-') {
         return {
             isValid: false,
             message: 'No EDD provided'
@@ -1328,10 +1473,13 @@ function calculateTimeRemaining(eddDateString) {
     }
 }
 
-// Function to format time remaining for display
+// Function to format time remaining for display in first page
 function formatTimeRemaining(timeData) {
     if (!timeData.isValid) {
-        return `<div style="color: #666; text-align: center;">${timeData.message}</div>`;
+        return `<div style="color: #666; text-align: center; padding: 20px;">
+                    <div style="font-size: 1.2rem; margin-bottom: 10px; color: #f44336;">⚠️</div>
+                    <div>Please contact Admin for further assistance</div>
+                </div>`;
     }
     
     if (timeData.isFuture) {
@@ -1362,25 +1510,32 @@ function formatTimeRemaining(timeData) {
 // Function to format time remaining for second page
 function formatTimeRemainingWorkPage(timeData) {
     if (!timeData.isValid) {
-        return `<div style="color: rgba(255,255,255,0.8); text-align: center;">${timeData.message}</div>`;
+        return `<div style="color: #666; text-align: center; padding: 20px;">
+                    <div style="font-size: 1.2rem; margin-bottom: 10px; color: #f44336;">⚠️</div>
+                    <div>Please contact Admin for further assistance</div>
+                </div>`;
     }
     
     if (timeData.isFuture) {
         return `
-            <div class="work-countdown-positive work-countdown-value">
-                ${timeData.days}d ${timeData.hours}h ${timeData.minutes}m ${timeData.seconds}s
-            </div>
-            <div class="work-countdown-label">
-                Remaining until EDD (8:00 AM)
+            <div class="time-display-box future">
+                <div class="time-value time-positive">
+                    ${timeData.days}d ${timeData.hours}h ${timeData.minutes}m ${timeData.seconds}s
+                </div>
+                <div class="time-label">
+                    Remaining until EDD (8:00 AM)
+                </div>
             </div>
         `;
     } else {
         return `
-            <div class="work-countdown-negative work-countdown-value">
-                ${timeData.days}d ${timeData.hours}h ${timeData.minutes}m ${timeData.seconds}s
-            </div>
-            <div class="work-countdown-label">
-                Exceeded EDD (8:00 AM)
+            <div class="time-display-box past">
+                <div class="time-value time-negative">
+                    ${timeData.days}d ${timeData.hours}h ${timeData.minutes}m ${timeData.seconds}s
+                </div>
+                <div class="time-label">
+                    Exceeded EDD (8:00 AM)
+                </div>
             </div>
         `;
     }
@@ -1388,8 +1543,24 @@ function formatTimeRemainingWorkPage(timeData) {
 
 // Function to update the countdown in real-time
 function startCountdown(eddDateString) {
-    if (!eddDateString || eddDateString === 'N/A' || eddDateString === 'Not available') {
-        return;
+    if (!eddDateString || eddDateString === 'N/A' || eddDateString === 'Not available' || eddDateString === '-') {
+        // 如果没有有效的EDD，显示联系管理员信息
+        const countdownContainer1 = document.getElementById('countdownContainer1');
+        if (countdownContainer1) {
+            countdownContainer1.innerHTML = `<div style="color: #666; text-align: center; padding: 20px;">
+                                                <div style="font-size: 1.2rem; margin-bottom: 10px; color: #f44336;">⚠️</div>
+                                                <div>Please contact Admin for further assistance</div>
+                                            </div>`;
+        }
+        
+        const countdownContainer2 = document.getElementById('countdownContainer2');
+        if (countdownContainer2) {
+            countdownContainer2.innerHTML = `<div style="color: #666; text-align: center; padding: 20px;">
+                                                <div style="font-size: 1.2rem; margin-bottom: 10px; color: #f44336;">⚠️</div>
+                                                <div>Please contact Admin for further assistance</div>
+                                            </div>`;
+        }
+        return null;
     }
     
     // Update countdown every second
@@ -1416,12 +1587,12 @@ function startCountdown(eddDateString) {
     // Initial update
     const timeData = calculateTimeRemaining(eddDateString);
     const countdownContainer1 = document.getElementById('countdownContainer1');
-    if (countdownContainer1 && timeData.isValid) {
+    if (countdownContainer1) {
         countdownContainer1.innerHTML = formatTimeRemaining(timeData);
     }
     
     const countdownContainer2 = document.getElementById('countdownContainer2');
-    if (countdownContainer2 && timeData.isValid) {
+    if (countdownContainer2) {
         countdownContainer2.innerHTML = formatTimeRemainingWorkPage(timeData);
     }
     
@@ -1441,37 +1612,67 @@ function hideError() {
     document.getElementById('errorContainer').style.display = 'none';
 }
 
-// Function to display product data in form - 修复Item Name显示问题
-function displayProductData(data) {
-    // Update all form fields
-    document.getElementById('salesOrderNo').textContent = data.salesOrderNo || 'Not available';
-    document.getElementById('itemNo').textContent = data.itemNo || 'Not available';
-    document.getElementById('customerName').textContent = data.customerName || 'Not available';
-    
-    // 修复Item Name显示问题 - 使用innerHTML来支持换行
-    const itemNameElement = document.getElementById('itemName');
-    if (data.itemName) {
-        itemNameElement.innerHTML = data.itemName; // 使用innerHTML来渲染HTML标签
-        itemNameElement.classList.add('multiline');
+// Function to display product data in form
+function displayProductData(data, isDefault = false) {
+    if (isDefault) {
+        // 当没有querystring或无法解析时，显示"-"
+        document.getElementById('salesOrderNo').textContent = '-';
+        document.getElementById('itemNo').textContent = '-';
+        document.getElementById('customerName').textContent = '-';
+        document.getElementById('itemName').textContent = '-';
+        document.getElementById('dimension').textContent = '-';
+        document.getElementById('quantity').textContent = '-';
+        document.getElementById('unitOfMeasurement').textContent = '-';
+        document.getElementById('estimatedDeliveryDate').textContent = '-';
+        
+        // Store drawing info for later use
+        drawingInfo.salesOrder = '-';
+        drawingInfo.itemNo = '-';
+        drawingInfo.customerName = '-';
+        drawingInfo.itemName = '-';
+        drawingInfo.dimension = '-';
+        drawingInfo.quantity = '-';
+        drawingInfo.unit = '-';
+        drawingInfo.deliveryDate = '-';
     } else {
-        itemNameElement.textContent = 'Not available';
-        itemNameElement.classList.remove('multiline');
+        // Update all form fields
+        document.getElementById('salesOrderNo').textContent = data.salesOrderNo || '-';
+        document.getElementById('itemNo').textContent = data.itemNo || '-';
+        document.getElementById('customerName').textContent = data.customerName || '-';
+        
+        // 修复Item Name显示问题 - 不再使用换行，直接显示在一行
+        const itemNameElement = document.getElementById('itemName');
+        if (data.itemNameMain && data.itemNameSub) {
+            itemNameElement.textContent = `${data.itemNameMain} ${data.itemNameSub}`;
+        } else if (data.itemName) {
+            // 如果itemName中包含<br>，替换为空格
+            itemNameElement.textContent = data.itemName.replace(/<br>/g, ' ').replace(/\n/g, ' ');
+        } else {
+            itemNameElement.textContent = '-';
+        }
+        
+        document.getElementById('dimension').textContent = data.dimension || '-';
+        document.getElementById('quantity').textContent = data.quantity || '-';
+        document.getElementById('unitOfMeasurement').textContent = data.unitOfMeasurement || '-';
+        document.getElementById('estimatedDeliveryDate').textContent = data.estimatedDeliveryDate || '-';
+        
+        // Store drawing info for later use
+        drawingInfo.salesOrder = data.salesOrderNo || '-';
+        drawingInfo.itemNo = data.itemNo || '-';
+        drawingInfo.customerName = data.customerName || '-';
+        drawingInfo.itemName = data.itemName ? data.itemName.replace(/<br>/g, ' ').replace(/\n/g, ' ') : '-';
+        drawingInfo.dimension = data.dimension || '-';
+        drawingInfo.quantity = data.quantity || '-';
+        drawingInfo.unit = data.unitOfMeasurement || '-';
+        drawingInfo.deliveryDate = data.estimatedDeliveryDate || '-';
+        
+        // 存储目标表格信息用于提交
+        if (data.sourceInfo) {
+            targetSpreadsheetInfo.spreadsheetId = data.sourceInfo.spreadsheetId;
+            targetSpreadsheetInfo.sheetName = data.sourceInfo.sheetName;
+            targetSpreadsheetInfo.rowNumber = data.sourceInfo.rowNumber;
+        }
     }
-    
-    document.getElementById('dimension').textContent = data.dimension || 'Not available';
-    document.getElementById('quantity').textContent = data.quantity || 'Not available';
-    document.getElementById('unitOfMeasurement').textContent = data.unitOfMeasurement || 'Not available';
-    document.getElementById('estimatedDeliveryDate').textContent = data.estimatedDeliveryDate || 'Not available';
-    
-    // Store drawing info for later use
-    drawingInfo.salesOrder = data.salesOrderNo;
-    drawingInfo.itemNo = data.itemNo;
-    drawingInfo.customerName = data.customerName;
-    drawingInfo.itemName = data.itemName ? data.itemName.replace(/<br>/g, ' ') : 'Not available'; // 用于文本显示
-    drawingInfo.dimension = data.dimension;
-    drawingInfo.quantity = data.quantity;
-    drawingInfo.unit = data.unitOfMeasurement;
-    drawingInfo.deliveryDate = data.estimatedDeliveryDate;
 }
 
 // ========== 原始HTML 2的变量和函数 ==========
@@ -1507,8 +1708,8 @@ const EMPLOYEE_MAP = {
     'Tun-Myint-Aung-Q7AfJNbXzt3EVc46': 'Tun Myint Aung'
 };
 
-// 新增：特定用户列表（默认进入Job Completed模式）
-const JOB_COMPLETED_USERS = [
+// 新增：特定用户列表（不需要填写Quantity问题的用户）
+const JOB_COMPLETED_USERS_NO_QUANTITY = [
     'Cassandra',
     'Ethan Chuu',
     'Victor So',
@@ -1533,6 +1734,7 @@ let selectedOptions = {
     jobCompleted: null,
     qualityControl: null
 };
+let jobCompletedQuantity = ""; // 新增：存储Job Completed的产品数量
 let isSubmitted = false;
 let qcUnlocked = false;
 let countdownInterval = null;
@@ -1546,15 +1748,25 @@ let isMobileDevice = false;
 
 // 存储图纸信息
 let drawingInfo = {
-    salesOrder: "Loading...",
-    itemNo: "Loading...",
-    customerName: "Loading...",
-    itemName: "Loading...",
-    dimension: "Loading...",
-    quantity: "Loading...",
-    unit: "Loading...",
-    deliveryDate: "Loading..."
+    salesOrder: "-",
+    itemNo: "-",
+    customerName: "-",
+    itemName: "-",
+    dimension: "-",
+    quantity: "-",
+    unit: "-",
+    deliveryDate: "-"
 };
+
+// 存储目标表格信息
+let targetSpreadsheetInfo = {
+    spreadsheetId: "",
+    sheetName: "",
+    rowNumber: 0
+};
+
+// GAS Web App URL for submitting data
+const GAS_SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbz7M9o3i8l1pj2I1DDo4skQuBTJ-k-rRJJrWzwLFy5mTJrgmxAm-vReWNpUk4O6tNAB/exec';
 
 // 卡片内容和iframe数据
 const cardContents = [
@@ -1627,6 +1839,10 @@ const cardContents = [
                     {id: "jc1-22", en: "Bring Back Processed Product from Sub-Contractor", cn: "从代工/分包商拿回处理好的产品"},
                     {id: "jc1-23", en: "Shipping Out", cn: "出货"}
                 ]
+            },
+            {
+                title: "Quantity of Product Completed by You 由你完成的产品数量",
+                options: []
             }
         ]
     },
@@ -1651,26 +1867,25 @@ function isMobile() {
     return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
-// ========== QR码扫描功能 ==========
+// ========== 二维码扫描功能 ==========
 async function startQRScanner() {
     try {
-        // 隐藏GIF容器
-        document.getElementById('gifContainer').style.display = 'none';
-        
-        // 显示扫描提示
-        cameraInstruction.style.display = 'block';
+        console.log("Starting QR scanner...");
         
         // 隐藏开始按钮，显示停止和切换按钮
         document.getElementById('startScanner').style.display = 'none';
-        stopScannerBtn.style.display = 'inline-block';
-        switchCameraBtn.style.display = 'inline-block';
+        document.getElementById('stopScanner').style.display = 'inline-block';
+        document.getElementById('switchCamera').style.display = 'inline-block';
         
         // 隐藏扫描覆盖层
         scannerOverlay.classList.add('hidden');
         
+        // 显示扫描提示
+        cameraInstruction.style.display = 'block';
+        
         if (isMobileDevice && typeof Html5QrcodeScanner !== 'undefined') {
             // 手机端使用html5-qrcode库
-            startMobileQRScanner();
+            await startMobileQRScanner();
         } else {
             // 电脑端使用jsQR库
             await startDesktopQRScanner();
@@ -1700,6 +1915,7 @@ async function startDesktopQRScanner() {
         
         qrScannerActive = true;
         requestAnimationFrame(scanQRCode);
+        console.log("Desktop QR scanner started successfully");
     } catch (error) {
         console.error("Camera error:", error);
         alert("Unable to access camera: " + error.message);
@@ -1707,33 +1923,39 @@ async function startDesktopQRScanner() {
     }
 }
 
-function startMobileQRScanner() {
-    // 清理旧的扫描器
-    if (html5QrcodeScanner) {
-        html5QrcodeScanner.clear();
-    }
-    
-    // 创建新的扫描器
-    html5QrcodeScanner = new Html5Qrcode("scannerContainer");
-    
-    html5QrcodeScanner.start(
-        { facingMode: "environment" },
-        { 
-            fps: 10, 
-            qrbox: { width: 250, height: 250 }
-        },
-        (decodedText) => {
-            console.log("Mobile scanned:", decodedText);
-            processScannedQR(decodedText);
-        },
-        (errorMessage) => {
-            // 忽略解析错误
+async function startMobileQRScanner() {
+    try {
+        // 清理旧的扫描器
+        if (html5QrcodeScanner) {
+            await html5QrcodeScanner.clear();
         }
-    ).catch(err => {
+        
+        // 创建新的扫描器
+        html5QrcodeScanner = new Html5Qrcode("scannerContainer");
+        
+        await html5QrcodeScanner.start(
+            { facingMode: "environment" },
+            { 
+                fps: 10, 
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            },
+            (decodedText) => {
+                console.log("Mobile scanned successfully:", decodedText);
+                processScannedQR(decodedText);
+            },
+            (errorMessage) => {
+                // 忽略解析错误，继续扫描
+                console.log("Scanning...");
+            }
+        );
+        
+        console.log("Mobile scanner started successfully");
+    } catch (err) {
         console.error("Mobile camera error:", err);
         alert("Camera initialization failed: " + err.message);
         stopQRScanner();
-    });
+    }
 }
 
 function scanQRCode() {
@@ -1752,6 +1974,7 @@ function scanQRCode() {
             });
             
             if (code) {
+                console.log("Desktop scanned successfully:", code.data);
                 processScannedQR(code.data);
                 stopQRScanner();
             }
@@ -1765,90 +1988,18 @@ function scanQRCode() {
     }
 }
 
-function processScannedQR(qrData) {
-    try {
-        console.log("Processing QR data:", qrData);
-        
-        // 检查是否是URL格式
-        let employeeKey = '';
-        
-        if (qrData.includes('http')) {
-            // 从URL中提取员工key
-            const url = new URL(qrData);
-            const pathParts = url.pathname.split('/').filter(p => p);
-            
-            if (pathParts.length > 0) {
-                employeeKey = pathParts[0];
-            } else {
-                throw new Error('Invalid URL format');
-            }
-        } else {
-            // 如果不是URL，直接使用整个字符串作为key
-            employeeKey = qrData;
-        }
-        
-        console.log("Extracted employee key:", employeeKey);
-        
-        // 在员工映射中查找
-        if (EMPLOYEE_MAP[employeeKey]) {
-            const employeeName = EMPLOYEE_MAP[employeeKey];
-            console.log("Found employee:", employeeName);
-            
-            // 显示员工欢迎信息
-            employeeNameDisplay.textContent = employeeName;
-            employeeWelcome.style.display = 'block';
-            
-            // 延迟1秒后跳转到工作页面，给用户确认时间
-            setTimeout(() => {
-                handleCredentialScan(employeeName);
-            }, 1000);
-            
-        } else {
-            console.warn("Unknown employee key:", employeeKey);
-            
-            // 尝试在URL查询参数中查找
-            const urlParams = new URLSearchParams(qrData.split('?')[1] || '');
-            const possibleKey = urlParams.get('id') || urlParams.get('employee') || '';
-            
-            if (possibleKey && EMPLOYEE_MAP[possibleKey]) {
-                const employeeName = EMPLOYEE_MAP[possibleKey];
-                employeeNameDisplay.textContent = employeeName;
-                employeeWelcome.style.display = 'block';
-                
-                setTimeout(() => {
-                    handleCredentialScan(employeeName);
-                }, 1000);
-            } else {
-                alert(`Unknown employee QR code.\n\nScanned: ${employeeKey}\n\nPlease scan a valid employee QR code from the list.`);
-            }
-        }
-    } catch (error) {
-        console.error("Error processing QR code:", error);
-        
-        // 尝试直接匹配整个字符串
-        if (EMPLOYEE_MAP[qrData]) {
-            const employeeName = EMPLOYEE_MAP[qrData];
-            employeeNameDisplay.textContent = employeeName;
-            employeeWelcome.style.display = 'block';
-            
-            setTimeout(() => {
-                handleCredentialScan(employeeName);
-            }, 1000);
-        } else {
-            alert(`Error processing QR code: ${error.message}\n\nPlease scan a valid employee QR code.`);
-        }
-    }
-}
-
-function stopQRScanner() {
+async function stopQRScanner() {
     qrScannerActive = false;
     
     // 停止手机端扫描器
     if (html5QrcodeScanner) {
-        html5QrcodeScanner.stop().then(() => {
+        try {
+            await html5QrcodeScanner.stop();
             html5QrcodeScanner.clear();
             html5QrcodeScanner = null;
-        }).catch(console.error);
+        } catch (err) {
+            console.error("Error stopping mobile scanner:", err);
+        }
     }
     
     // 停止视频流
@@ -1862,19 +2013,18 @@ function stopQRScanner() {
         scannerVideo.srcObject = null;
     }
     
-    // 显示GIF容器
-    document.getElementById('gifContainer').style.display = 'block';
-    
     // 重置按钮状态
     document.getElementById('startScanner').style.display = 'inline-block';
-    stopScannerBtn.style.display = 'none';
-    switchCameraBtn.style.display = 'none';
+    document.getElementById('stopScanner').style.display = 'none';
+    document.getElementById('switchCamera').style.display = 'none';
     
     // 显示扫描覆盖层
     scannerOverlay.classList.remove('hidden');
     
     // 隐藏扫描提示
     cameraInstruction.style.display = 'none';
+    
+    console.log("QR scanner stopped");
 }
 
 function switchCamera() {
@@ -1887,23 +2037,105 @@ function switchCamera() {
     }, 500);
 }
 
+// ========== QR码处理逻辑 ==========
+function processScannedQR(qrData) {
+    console.log("Processing QR data:", qrData);
+    
+    try {
+        // 去除前后空格
+        qrData = qrData.trim();
+        
+        // 检查是否是URL格式
+        if (qrData.startsWith('http')) {
+            // 尝试从URL中提取员工key
+            try {
+                const url = new URL(qrData);
+                // 获取最后一个路径段
+                const pathParts = url.pathname.split('/').filter(p => p);
+                if (pathParts.length > 0) {
+                    const employeeKey = pathParts[pathParts.length - 1];
+                    validateEmployee(employeeKey);
+                    return;
+                }
+            } catch (e) {
+                console.log("Not a valid URL, trying direct match");
+            }
+        }
+        
+        // 直接匹配整个字符串
+        validateEmployee(qrData);
+        
+    } catch (error) {
+        console.error("Error processing QR code:", error);
+        alert(`Error processing QR code: ${error.message}\n\nPlease scan a valid employee QR code.`);
+    }
+}
+
+// ========== 员工验证和跳转逻辑 ==========
+function validateEmployee(employeeKey) {
+    console.log("Validating employee key:", employeeKey);
+    
+    // 直接检查员工映射
+    if (EMPLOYEE_MAP[employeeKey]) {
+        const employeeName = EMPLOYEE_MAP[employeeKey];
+        console.log("Employee found:", employeeName);
+        
+        // 显示员工欢迎信息
+        employeeNameDisplay.textContent = employeeName;
+        employeeWelcome.style.display = 'block';
+        
+        // 延迟1秒后跳转到工作页面
+        setTimeout(() => {
+            handleCredentialScan(employeeName);
+        }, 1000);
+    } else {
+        // 尝试去除可能的后缀或参数
+        const cleanKey = employeeKey.split('?')[0].split('#')[0];
+        if (EMPLOYEE_MAP[cleanKey]) {
+            const employeeName = EMPLOYEE_MAP[cleanKey];
+            employeeNameDisplay.textContent = employeeName;
+            employeeWelcome.style.display = 'block';
+            
+            setTimeout(() => {
+                handleCredentialScan(employeeName);
+            }, 1000);
+        } else {
+            // 显示错误信息
+            alert(`Unknown employee QR code.\n\nScanned: ${employeeKey}\n\nPlease scan a valid employee QR code from the list.`);
+            
+            // 重新开始扫描
+            if (isMobileDevice && html5QrcodeScanner) {
+                // 手机端继续扫描
+                console.log("Continuing mobile scan...");
+            } else {
+                // 电脑端继续扫描
+                console.log("Continuing desktop scan...");
+            }
+        }
+    }
+}
+
 // ========== 工作流处理函数 ==========
 function handleCredentialScan(employeeName) {
+    console.log("Handling credential scan for:", employeeName);
+    
     // 停止二维码扫描
     stopQRScanner();
     
     // 隐藏图纸信息，显示工作数据录入页面
-    drawingSection.style.display = "none";
-    workSection.style.display = "block";
+    document.getElementById("drawingSection").style.display = "none";
+    document.getElementById("workSection").style.display = "block";
     currentUser = employeeName;
-    document.getElementById("userDisplay").textContent = `Current User: ${employeeName}`;
+    
+    // 修改：Current User显示为一行
+    document.getElementById("currentUserName").textContent = "Current User：" + employeeName;
     
     // 显示并更新图纸信息串联框
     updateDrawingInfoSummary();
     drawingInfoSummary.style.display = "block";
     
-    // ========== 新增逻辑：检查用户是否应该在Job Completed模式 ==========
-    if (JOB_COMPLETED_USERS.includes(employeeName)) {
+    // 检查用户是否应该在Job Completed模式
+    if (JOB_COMPLETED_USERS_NO_QUANTITY.includes(employeeName)) {
         // 特定用户：默认进入Job Completed模式
         currentCardIndex = 1;
         console.log(`${employeeName} is in job completed users list, starting in Job Completed mode`);
@@ -1913,7 +2145,7 @@ function handleCredentialScan(employeeName) {
         console.log(`${employeeName} is not in job completed users list, starting in Received From mode`);
     }
     
-    // 重置所有选择状态（注意：clearAllSelections()不再重置currentCardIndex）
+    // 重置所有选择状态
     clearAllSelections();
     
     // 初始化卡片
@@ -1928,8 +2160,50 @@ function handleCredentialScan(employeeName) {
 
 // ========== 工作页面功能 ==========
 function updateDrawingInfoSummary() {
-    const summary = `${drawingInfo.salesOrder} - ${drawingInfo.itemName} (${drawingInfo.customerName}) - Qty: ${drawingInfo.quantity} ${drawingInfo.unit} - ${drawingInfo.dimension} - EDD: ${drawingInfo.deliveryDate}`;
-    drawingInfoSummary.textContent = summary;
+    // 按照要求的格式：Sales Order No.-Customer Name-Item No.-Item Name-Dimension-Quantity-Unit of Measurement-EDD:Estimated Delivery Date
+    const summaryHTML = `
+        <span class="info-item">
+            <span class="info-label">Sales Order No.</span>
+            <span>${drawingInfo.salesOrder}</span>
+        </span>
+        <span class="info-separator">-</span>
+        <span class="info-item">
+            <span class="info-label">Customer Name</span>
+            <span>${drawingInfo.customerName}</span>
+        </span>
+        <span class="info-separator">-</span>
+        <span class="info-item">
+            <span class="info-label">Item No.</span>
+            <span>${drawingInfo.itemNo}</span>
+        </span>
+        <span class="info-separator">-</span>
+        <span class="info-item">
+            <span class="info-label">Item Name</span>
+            <span>${drawingInfo.itemName}</span>
+        </span>
+        <span class="info-separator">-</span>
+        <span class="info-item">
+            <span class="info-label">Dimension</span>
+            <span>${drawingInfo.dimension}</span>
+        </span>
+        <span class="info-separator">-</span>
+        <span class="info-item">
+            <span class="info-label">Quantity</span>
+            <span>${drawingInfo.quantity}</span>
+        </span>
+        <span class="info-separator">-</span>
+        <span class="info-item">
+            <span class="info-label">Unit of Measurement</span>
+            <span>${drawingInfo.unit}</span>
+        </span>
+        <span class="info-separator">-</span>
+        <span class="info-item">
+            <span class="info-label">EDD:</span>
+            <span>${drawingInfo.deliveryDate}</span>
+        </span>
+    `;
+    
+    drawingInfoSummary.innerHTML = summaryHTML;
 }
 
 function initCards() {
@@ -1976,6 +2250,7 @@ function clearOtherPagesSelections(newPageIndex) {
     
     if (newPageIndex !== 1) {
         selectedOptions.jobCompleted = null;
+        jobCompletedQuantity = "";
     }
     
     if (newPageIndex !== 2) {
@@ -2050,10 +2325,19 @@ function getOptionTextShort(optionId) {
 
 function hasSelectionInCard(cardIndex) {
     if (cardIndex === 0) {
+        // Received From需要两个选项都有选择
         return selectedOptions.receivedFrom1 && selectedOptions.receivedFrom2;
     } else if (cardIndex === 1) {
-        return selectedOptions.jobCompleted !== null;
+        // Job Completed需要选择工作选项
+        // 对于特定用户，只需要选择工作选项
+        // 对于其他用户，还需要填写数量
+        if (JOB_COMPLETED_USERS_NO_QUANTITY.includes(currentUser)) {
+            return selectedOptions.jobCompleted !== null;
+        } else {
+            return selectedOptions.jobCompleted !== null && jobCompletedQuantity !== "";
+        }
     } else if (cardIndex === 2) {
+        // Quality Control只需要一个选项
         return selectedOptions.qualityControl !== null;
     }
     return false;
@@ -2071,8 +2355,9 @@ function clearAllSelections() {
         qualityControl: null
     };
     
+    jobCompletedQuantity = "";
+    
     qcUnlocked = false;
-    // 注意：这里不再重置 currentCardIndex = 0;  // <-- 这是关键修改！
     isSubmitted = false;
     
     const submitBtn = document.getElementById('submitBtn');
@@ -2092,39 +2377,59 @@ function renderCardContent() {
     
     if (currentCardIndex === 0) {
         contentHTML += `
-            <div style="margin-bottom: 25px;">
-                <div style="font-weight: 600; margin-bottom: 10px; color: #333;">${currentCard.frames[0].title}:</div>
+            <div style="margin-bottom: 20px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: #333;">${currentCard.frames[0].title}:</div>
                 ${renderOptions(currentCard.frames[0].options, 'receivedFrom1')}
             </div>
-            <div>
-                <div style="font-weight: 600; margin-bottom: 10px; color: #333;">${currentCard.frames[1].title}:</div>
+            <div style="margin-bottom: 20px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: #333;">${currentCard.frames[1].title}:</div>
                 ${renderOptions(currentCard.frames[1].options, 'receivedFrom2')}
                 ${currentCard.frames[1].hasInput ? `
-                    <div id="deficiencyInput" style="margin-top: 15px; display: none;">
-                        <div style="margin-bottom: 8px; font-weight: 500; color: #555;">Deficiency Details (不足之处详情):</div>
-                        <input type="text" id="deficiencyText" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Enter deficiency details here...">
+                    <div id="deficiencyInput" style="margin-top: 12px; display: none;">
+                        <div style="margin-bottom: 6px; font-weight: 500; color: #555;">Deficiency Details (不足之处详情):</div>
+                        <input type="text" id="deficiencyText" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;" placeholder="Enter deficiency details here...">
                     </div>
                 ` : ''}
             </div>
         `;
     } else if (currentCardIndex === 1) {
+        // Job Completed页面
         contentHTML += `
-            <div>
+            <div style="margin-bottom: 20px;">
+                <div style="font-weight: 600; margin-bottom: 8px; color: #333;">${currentCard.frames[0].title}:</div>
                 ${renderOptions(currentCard.frames[0].options, 'jobCompleted')}
             </div>
         `;
+        
+        // 检查用户是否需要填写数量问题
+        if (!JOB_COMPLETED_USERS_NO_QUANTITY.includes(currentUser)) {
+            contentHTML += `
+                <div class="quantity-section">
+                    <div style="font-weight: 600; margin-bottom: 12px; color: #333; text-align: center; font-size: 16px;">
+                        Quantity of Product Completed by You - 由你完成的产品数量：
+                    </div>
+                    <div class="quantity-input-container">
+                        <label for="jobCompletedQuantity">Enter quantity (numbers only):</label>
+                        <input type="text" id="jobCompletedQuantity" class="clickable-input" 
+                               placeholder="Enter quantity here..." 
+                               value="${jobCompletedQuantity}"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    </div>
+                </div>
+            `;
+        }
     } else if (currentCardIndex === 2) {
         if (!qcUnlocked) {
             contentHTML += `
-                <div style="text-align: center; padding: 40px 20px;">
-                    <div style="font-size: 18px; color: #666; margin-bottom: 20px;">Quality Control section is locked</div>
+                <div style="text-align: center; padding: 30px 15px;">
+                    <div style="font-size: 16px; color: #666; margin-bottom: 15px;">Quality Control section is locked</div>
                     <div class="password-section">
-                        <div style="margin-bottom: 10px; color: #555;">Enter password to unlock:</div>
+                        <div style="margin-bottom: 8px; color: #555;">Enter password to unlock:</div>
                         <div class="password-input">
                             <input type="password" id="qcPassword" placeholder="Enter password..." class="clickable-input">
                             <button onclick="checkQCPassword()">Unlock</button>
                         </div>
-                        <div id="passwordError" style="color: #e74c3c; margin-top: 10px; display: none;">Incorrect password. Try again.</div>
+                        <div id="passwordError" style="color: #e74c3c; margin-top: 8px; display: none;">Incorrect password. Try again.</div>
                     </div>
                 </div>
             `;
@@ -2140,6 +2445,23 @@ function renderCardContent() {
     contentFrame.innerHTML = contentHTML;
     addOptionListeners();
     restoreSelectedOptions();
+    
+    // 添加Job Completed数量输入框的事件监听
+    if (currentCardIndex === 1 && !JOB_COMPLETED_USERS_NO_QUANTITY.includes(currentUser)) {
+        const quantityInput = document.getElementById('jobCompletedQuantity');
+        if (quantityInput) {
+            quantityInput.addEventListener('input', function(e) {
+                jobCompletedQuantity = this.value;
+                updateSubmitButton();
+            });
+            
+            // 恢复之前输入的值
+            if (jobCompletedQuantity) {
+                quantityInput.value = jobCompletedQuantity;
+            }
+        }
+    }
+    
     updateSubmitButton();
 }
 
@@ -2199,7 +2521,7 @@ function addOptionListeners() {
     });
     
     document.addEventListener('mousedown', function(e) {
-        if (e.target.id === 'qcPassword' || e.target.id === 'deficiencyText') {
+        if (e.target.id === 'qcPassword' || e.target.id === 'deficiencyText' || e.target.id === 'jobCompletedQuantity') {
             e.stopPropagation();
             e.preventDefault();
             e.target.focus();
@@ -2288,6 +2610,90 @@ function getPageName(cardIndex) {
     }
 }
 
+// ========== 新增：提交数据到Google Sheets ==========
+function submitDataToGoogleSheets(submissionData) {
+    // 准备表单数据
+    document.getElementById('form_timestamp').value = submissionData.timestamp;
+    document.getElementById('form_name').value = submissionData.name;
+    document.getElementById('form_action').value = submissionData.action;
+    document.getElementById('form_received').value = submissionData.received;
+    document.getElementById('form_check').value = submissionData.check;
+    document.getElementById('form_jobCompleted').value = submissionData.jobCompleted;
+    document.getElementById('form_quantity').value = submissionData.quantity;
+    document.getElementById('form_spreadsheetId').value = submissionData.spreadsheetId;
+    document.getElementById('form_sheetName').value = submissionData.sheetName;
+    document.getElementById('form_salesOrderNo').value = submissionData.salesOrderNo;
+    document.getElementById('form_itemNo').value = submissionData.itemNo;
+    
+    // 设置表单action到GAS Web App
+    document.getElementById('dataForm').action = GAS_SUBMIT_URL + '?action=submit';
+    
+    // 提交表单
+    document.getElementById('dataForm').submit();
+}
+
+// ========== 修改confirmSubmit函数 ==========
+function confirmSubmit() {
+    // 隐藏确认模态框
+    document.getElementById('confirmationModal').style.display = 'none';
+    
+    // 准备提交数据
+    const submissionData = {
+        timestamp: new Date().toISOString(),
+        name: currentUser,
+        action: "",
+        received: "",
+        check: "",
+        jobCompleted: "",
+        quantity: "",
+        spreadsheetId: targetSpreadsheetInfo.spreadsheetId,
+        sheetName: targetSpreadsheetInfo.sheetName,
+        salesOrderNo: drawingInfo.salesOrder,
+        itemNo: drawingInfo.itemNo
+    };
+    
+    // 根据当前卡片设置数据
+    if (currentCardIndex === 0) {
+        // Received From
+        submissionData.action = "Received From";
+        submissionData.received = getOptionText(selectedOptions.receivedFrom1);
+        submissionData.check = getOptionText(selectedOptions.receivedFrom2);
+        
+        // 如果有不足之处详情，添加到check字段
+        if (selectedOptions.receivedFrom2 === 'rf2-2') {
+            const deficiencyText = document.getElementById('deficiencyText');
+            if (deficiencyText && deficiencyText.value) {
+                submissionData.check += " - " + deficiencyText.value;
+            }
+        }
+    } else if (currentCardIndex === 1) {
+        // Job Completed
+        submissionData.action = "Job Completed";
+        submissionData.jobCompleted = getOptionText(selectedOptions.jobCompleted);
+        submissionData.quantity = jobCompletedQuantity || "";
+    } else if (currentCardIndex === 2) {
+        // Quality Control
+        submissionData.action = "Quality Control";
+        submissionData.jobCompleted = getOptionText(selectedOptions.qualityControl);
+    }
+    
+    console.log('Submitting data to Google Sheets:', submissionData);
+    
+    // 提交数据到Google Sheets
+    submitDataToGoogleSheets(submissionData);
+    
+    // 显示成功消息
+    const successMessage = document.getElementById('successMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    successMessage.style.display = 'block';
+    submitBtn.disabled = true;
+    isSubmitted = true;
+    
+    // 记录提交的数据
+    console.log('Data submitted:', submissionData);
+}
+
 function showConfirmationModal() {
     if (isSubmitted) return;
     
@@ -2300,7 +2706,7 @@ function showConfirmationModal() {
     let confirmationMessage = `<p><strong>Drawing Info:</strong> ${drawingInfoSummary.textContent}</p>`;
     confirmationMessage += `<p><strong>Current User:</strong> ${currentUser}</p>`;
     confirmationMessage += `<p><strong>Current Page:</strong> ${getPageName(currentCardIndex)}</p>`;
-    confirmationMessage += `<hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">`;
+    confirmationMessage += `<hr style="margin: 12px 0; border: 0; border-top: 1px solid #ddd;">`;
     
     if (currentCardIndex === 0) {
         const option1 = getOptionText(selectedOptions.receivedFrom1);
@@ -2317,40 +2723,25 @@ function showConfirmationModal() {
     } else if (currentCardIndex === 1) {
         const option = getOptionText(selectedOptions.jobCompleted);
         confirmationMessage += `<p><strong>Selected:</strong> ${option}</p>`;
+        
+        // 添加数量信息（如果用户需要填写）
+        if (!JOB_COMPLETED_USERS_NO_QUANTITY.includes(currentUser) && jobCompletedQuantity) {
+            confirmationMessage += `<p><strong>Quantity of Product Completed by You:</strong> ${jobCompletedQuantity}</p>`;
+        }
     } else if (currentCardIndex === 2) {
         const option = getOptionText(selectedOptions.qualityControl);
         confirmationMessage += `<p><strong>Selected:</strong> ${option}</p>`;
     }
     
-    confirmationMessage += `<hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">`;
+    confirmationMessage += `<hr style="margin: 12px 0; border: 0; border-top: 1px solid #ddd;">`;
     confirmationMessage += `<p style="text-align: center; font-weight: bold;">Is this information correct?</p>`;
     
     document.getElementById('modalMessage').innerHTML = confirmationMessage;
     document.getElementById('confirmationModal').style.display = 'flex';
 }
 
-function confirmSubmit() {
-    document.getElementById('confirmationModal').style.display = 'none';
-    
-    const successMessage = document.getElementById('successMessage');
-    const submitBtn = document.getElementById('submitBtn');
-    
-    successMessage.style.display = 'block';
-    submitBtn.disabled = true;
-    isSubmitted = true;
-    
-    console.log('Data submitted:', {
-        user: currentUser,
-        cardIndex: currentCardIndex,
-        selectedOptions: selectedOptions,
-        timestamp: new Date().toISOString()
-    });
-}
-
 function cancelSubmit() {
     document.getElementById('confirmationModal').style.display = 'none';
-    alert("Selection has been reset. Please make your choice again.");
-    clearAllSelections();
 }
 
 function submitData() {
@@ -2363,7 +2754,8 @@ function initScrollFollow() {
     
     if (!cardsSection || !infoSidebar) return;
     
-    const initialTop = 20;
+    const headerHeight = document.querySelector('.work-top-header').offsetHeight;
+    const initialTop = headerHeight + 20;
     
     window.addEventListener('scroll', function() {
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -2388,6 +2780,19 @@ async function init() {
         // 隐藏错误信息
         hideError();
         
+        if (!params) {
+            // 如果没有querystring或无法解析，显示"-"
+            console.log('No valid URL parameters, displaying default empty data');
+            displayProductData({}, true);
+            
+            // 启动倒计时显示联系管理员信息
+            startCountdown('-');
+            
+            // 隐藏加载动画
+            document.getElementById('loadingContainer').style.display = 'none';
+            return;
+        }
+        
         // 尝试从GAS获取数据
         try {
             const result = await fetchProductData(params.salesOrderNo, params.itemNo);
@@ -2395,50 +2800,41 @@ async function init() {
             // 检查是否有错误
             if (result.error) {
                 console.warn('Error from GAS:', result.error);
-                // 如果GAS返回错误，使用默认数据
-                throw new Error(result.error);
-            }
-            
-            // 获取数据对象
-            const productData = result.data || result;
-            
-            // 修复Item Name显示 - 正确格式化
-            if (productData.itemNameMain && productData.itemNameSub) {
-                productData.itemName = `${productData.itemNameMain}<br>${productData.itemNameSub}`;
-            } else if (productData.itemNameMain) {
-                productData.itemName = productData.itemNameMain;
+                // 如果GAS返回错误，显示"-"
+                displayProductData({}, true);
+                startCountdown('-');
             } else {
-                productData.itemName = 'Not available';
-            }
-            
-            // 添加销售订单和项目号
-            productData.salesOrderNo = params.salesOrderNo;
-            productData.itemNo = params.itemNo;
-            
-            // 显示数据
-            displayProductData(productData);
-            
-            // 启动倒计时
-            if (productData.estimatedDeliveryDate) {
+                // 获取数据对象
+                const productData = result.data || result;
+                
+                // 修复Item Name显示 - 直接显示在一行
+                if (productData.itemNameMain && productData.itemNameSub) {
+                    productData.itemName = `${productData.itemNameMain} ${productData.itemNameSub}`;
+                } else if (productData.itemNameMain) {
+                    productData.itemName = productData.itemNameMain;
+                } else if (productData.itemName) {
+                    // 如果itemName中包含<br>或换行，替换为空格
+                    productData.itemName = productData.itemName.replace(/<br>/g, ' ').replace(/\n/g, ' ');
+                } else {
+                    productData.itemName = '-';
+                }
+                
+                // 添加销售订单和项目号
+                productData.salesOrderNo = params.salesOrderNo;
+                productData.itemNo = params.itemNo;
+                
+                // 显示数据
+                displayProductData(productData);
+                
+                // 启动倒计时
                 startCountdown(productData.estimatedDeliveryDate);
             }
             
         } catch (error) {
-            console.warn('Using default data due to fetch error:', error);
-            // 如果获取失败，使用默认数据
-            const defaultData = {
-                salesOrderNo: params.salesOrderNo,
-                itemNo: params.itemNo,
-                customerName: 'Demo Customer',
-                itemName: 'Demo Product<br>Demo Sub Product', // 使用<br>标签
-                dimension: 'L 870mm x W 760mm x H 50mm',
-                quantity: '1',
-                unitOfMeasurement: 'Set',
-                estimatedDeliveryDate: '15/01/2025'
-            };
-            
-            displayProductData(defaultData);
-            startCountdown('15/01/2025');
+            console.warn('Error fetching data, displaying empty data:', error);
+            // 如果获取失败，显示"-"
+            displayProductData({}, true);
+            startCountdown('-');
         }
         
         // 隐藏加载动画
@@ -2454,6 +2850,7 @@ async function init() {
 document.addEventListener('DOMContentLoaded', function() {
     // 检测设备类型
     isMobileDevice = isMobile();
+    console.log("Is mobile device?", isMobileDevice);
     
     // 获取DOM元素
     scannerContainer = document.getElementById("scannerContainer");
@@ -2476,6 +2873,11 @@ document.addEventListener('DOMContentLoaded', function() {
     employeeWelcome = document.getElementById("employeeWelcome");
     employeeNameDisplay = document.getElementById("employeeNameDisplay");
     
+    // 绑定按钮事件
+    document.getElementById('startScanner').addEventListener('click', startQRScanner);
+    document.getElementById('stopScanner').addEventListener('click', stopQRScanner);
+    document.getElementById('switchCamera').addEventListener('click', switchCamera);
+    
     // 绑定提交按钮事件
     document.getElementById('submitBtn').addEventListener('click', function(e) {
         e.preventDefault();
@@ -2486,17 +2888,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化页面
     init();
     
-    if (isMobileDevice) {
-        // 手机版：使用html5-qrcode库
-        console.log("Mobile device detected, using html5-qrcode");
-        
-        // 设置扫描器容器大小
-        scannerContainer.style.height = "300px";
-        
-    } else {
-        // 电脑版：使用jsQR库，同时支持外接扫描枪
-        console.log("Desktop device detected, using jsQR");
-        
+    // ========== 电脑端外接扫描枪支持 ==========
+    if (!isMobileDevice) {
         // 监听外接扫描枪输入
         document.addEventListener("click", () => scannerInput.focus());
         
