@@ -1438,7 +1438,7 @@ function getUrlParameters() {
 // Function to fetch data from Google Apps Script
 async function fetchProductData(salesOrderNo, itemNo) {
     // 使用现有的GAS 1 web app URL
-    const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbz7M9o3i8l1pj2I1DDo4skQuBTJ-k-rRJJrWzwLFy5mTJrgmxAm-vReWNpUk4O6tNAB/exec';
+    const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbwpoX49S7nag3NaNWbLSLECMelbWHrOPX0Xtd9J4kgONvB5-2ABqH6dMrQpyEy7F5SA-w/exec';
     
     const response = await fetch(`${gasWebAppUrl}?salesOrderNo=${encodeURIComponent(salesOrderNo)}&itemNo=${encodeURIComponent(itemNo)}`);
     
@@ -1820,7 +1820,7 @@ let targetSpreadsheetInfo = {
 };
 
 // GAS Web App URL for submitting data
-const GAS_SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbz7M9o3i8l1pj2I1DDo4skQuBTJ-k-rRJJrWzwLFy5mTJrgmxAm-vReWNpUk4O6tNAB/exec';
+const GAS_SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbwpoX49S7nag3NaNWbLSLECMelbWHrOPX0Xtd9J4kgONvB5-2ABqH6dMrQpyEy7F5SA-w/exec';
 
 // 卡片内容和iframe数据
 const cardContents = [
@@ -2809,7 +2809,7 @@ function submitDataToGoogleSheets(submissionData) {
     document.getElementById('form_itemNo').value = submissionData.itemNo;
     
     // 设置表单action到GAS Web App
-    document.getElementById('dataForm').action = GAS_SUBMIT_URL + '?action=submit';
+    document.getElementById('dataForm').action = GAS_SUBMIT_URL;
     
     // 提交表单
     document.getElementById('dataForm').submit();
@@ -2838,7 +2838,7 @@ function confirmSubmit() {
     // 根据当前卡片设置数据
     if (currentCardIndex === 0) {
         // Received From
-        submissionData.action = "Received From";
+        submissionData.action = "Received from 从哪收到";
         submissionData.received = getOptionText(selectedOptions.receivedFrom1);
         submissionData.check = getOptionText(selectedOptions.receivedFrom2);
         
@@ -2851,12 +2851,12 @@ function confirmSubmit() {
         }
     } else if (currentCardIndex === 1) {
         // Job Completed
-        submissionData.action = "Job Completed";
+        submissionData.action = "Job Completed 已完成的工作";
         submissionData.jobCompleted = getOptionText(selectedOptions.jobCompleted);
         submissionData.quantity = jobCompletedQuantity || "";
     } else if (currentCardIndex === 2) {
         // Quality Control
-        submissionData.action = "Quality Control";
+        submissionData.action = "Quanlity Control 质量检查";
         submissionData.jobCompleted = getOptionText(selectedOptions.qualityControl);
     }
     
