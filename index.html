@@ -1180,7 +1180,7 @@
   <div id="confirmationModal" class="modal">
     <div class="modal-content">
         <h3>Confirm Selection</h3>
-        <div id="modalMessage" style="text-align: left; margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
+        <div id="modalMessage" style="text-align: left; margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 8bar; border: 1px solid #ddd;">
             <!-- 确认信息会动态填充到这里 -->
         </div>
         <div class="modal-buttons">
@@ -1371,15 +1371,15 @@
             <div class="sidebar-title">Last User Information</div>
             <div class="sidebar-item">
                 <div class="sidebar-label">Last User</div>
-                <div class="sidebar-value">Cyril</div>
+                <div class="sidebar-value" id="lastUserValue">-</div>
             </div>
             <div class="sidebar-item">
                 <div class="sidebar-label">Last User Status</div>
-                <div class="sidebar-value">Received From</div>
+                <div class="sidebar-value" id="lastUserStatusValue">-</div>
             </div>
             <div class="sidebar-item">
                 <div class="sidebar-label">Last User Selection</div>
-                <div class="sidebar-value">Received from Laser Cutting - 从激光切割部收到</div>
+                <div class="sidebar-value" id="lastUserSelectionValue">-</div>
             </div>
         </div>
     </div>
@@ -1438,7 +1438,7 @@ function getUrlParameters() {
 // Function to fetch data from Google Apps Script
 async function fetchProductData(salesOrderNo, itemNo) {
     // 使用现有的GAS 1 web app URL
-    const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbxB1seYsi3QCOyIHrWyCoWAo_rUQBJj-MlLZy88ZSCd3gLLIHIuJVYQMoJgrMzpederXQ/exec';
+    const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbxCTeHmWsl6Qo6rGlm7MyaSI64Z2mpVbunmbGZBzvpxFxMIYkohhlTr_b_myBzm69LwFw/exec';
     
     const response = await fetch(`${gasWebAppUrl}?salesOrderNo=${encodeURIComponent(salesOrderNo)}&itemNo=${encodeURIComponent(itemNo)}`);
     
@@ -1447,6 +1447,30 @@ async function fetchProductData(salesOrderNo, itemNo) {
     }
     
     return await response.json();
+}
+
+// 新增函数：获取最后一行用户数据
+async function fetchLastUserData(salesOrderNo, itemNo) {
+    try {
+        // 使用GAS Web App的getLastUser参数
+        const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbxCTeHmWsl6Qo6rGlm7MyaSI64Z2mpVbunmbGZBzvpxFxMIYkohhlTr_b_myBzm69LwFw/exec';
+        
+        const response = await fetch(`${gasWebAppUrl}?salesOrderNo=${encodeURIComponent(salesOrderNo)}&itemNo=${encodeURIComponent(itemNo)}&getLastUser=true`);
+        
+        if (!response.ok) {
+            throw new Error(`Failed to fetch last user data: ${response.status} ${response.statusText}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching last user data:', error);
+        return {
+            success: false,
+            lastUser: '-',
+            lastUserStatus: '-',
+            lastUserSelection: '-'
+        };
+    }
 }
 
 // Function to calculate time difference between EDD (8:00 AM) and now
@@ -1821,7 +1845,7 @@ let targetSpreadsheetInfo = {
 };
 
 // GAS Web App URL for submitting data
-const GAS_SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbxB1seYsi3QCOyIHrWyCoWAo_rUQBJj-MlLZy88ZSCd3gLLIHIuJVYQMoJgrMzpederXQ/exec';
+const GAS_SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbxCTeHmWsl6Qo6rGlm7MyaSI64Z2mpVbunmbGZBzvpxFxMIYkohhlTr_b_myBzm69LwFw/exec';
 
 // 卡片内容和iframe数据
 const cardContents = [
@@ -2230,7 +2254,48 @@ function validateEmployee(employeeKey) {
     }
 }
 
-// ========== 工作流处理函数 ==========
+// ========== 新增函数：更新最后用户信息 ==========
+async function updateLastUserInformation() {
+    try {
+        // 获取URL参数
+        const params = getUrlParameters();
+        if (!params || !params.salesOrderNo || !params.itemNo) {
+            console.log('No URL parameters, cannot fetch last user data');
+            return;
+        }
+        
+        console.log('Fetching last user data...');
+        
+        // 显示加载状态
+        document.getElementById('lastUserValue').textContent = 'Loading...';
+        document.getElementById('lastUserStatusValue').textContent = 'Loading...';
+        document.getElementById('lastUserSelectionValue').textContent = 'Loading...';
+        
+        // 从GAS获取最后一行数据
+        const lastUserData = await fetchLastUserData(params.salesOrderNo, params.itemNo);
+        
+        // 更新侧边栏显示
+        if (lastUserData.success) {
+            document.getElementById('lastUserValue').textContent = lastUserData.lastUser;
+            document.getElementById('lastUserStatusValue').textContent = lastUserData.lastUserStatus;
+            document.getElementById('lastUserSelectionValue').textContent = lastUserData.lastUserSelection;
+            console.log('Last user information updated:', lastUserData);
+        } else {
+            // 如果获取失败或没有数据，显示"-"
+            document.getElementById('lastUserValue').textContent = '-';
+            document.getElementById('lastUserStatusValue').textContent = '-';
+            document.getElementById('lastUserSelectionValue').textContent = '-';
+            console.log('No last user data found or error occurred');
+        }
+    } catch (error) {
+        console.error('Error updating last user information:', error);
+        document.getElementById('lastUserValue').textContent = '-';
+        document.getElementById('lastUserStatusValue').textContent = '-';
+        document.getElementById('lastUserSelectionValue').textContent = '-';
+    }
+}
+
+// ========== 修改handleCredentialScan函数 ==========
 function handleCredentialScan(employeeName) {
     console.log("Handling credential scan for:", employeeName);
     
@@ -2271,6 +2336,9 @@ function handleCredentialScan(employeeName) {
     if (!isMobileDevice) {
         initScrollFollow();
     }
+    
+    // 新增：立即获取并显示最后用户信息
+    updateLastUserInformation();
 }
 
 // ========== 工作页面功能 ==========
@@ -2794,28 +2862,6 @@ function getPageName(cardIndex) {
     }
 }
 
-// ========== 新增：提交数据到Google Sheets ==========
-function submitDataToGoogleSheets(submissionData) {
-    // 准备表单数据
-    document.getElementById('form_timestamp').value = submissionData.timestamp;
-    document.getElementById('form_name').value = submissionData.name;
-    document.getElementById('form_action').value = submissionData.action;
-    document.getElementById('form_received').value = submissionData.received;
-    document.getElementById('form_check').value = submissionData.check;
-    document.getElementById('form_jobCompleted').value = submissionData.jobCompleted;
-    document.getElementById('form_quantity').value = submissionData.quantity;
-    document.getElementById('form_spreadsheetId').value = submissionData.spreadsheetId;
-    document.getElementById('form_sheetName').value = submissionData.sheetName;
-    document.getElementById('form_salesOrderNo').value = submissionData.salesOrderNo;
-    document.getElementById('form_itemNo').value = submissionData.itemNo;
-    
-    // 设置表单action到GAS Web App
-    document.getElementById('dataForm').action = GAS_SUBMIT_URL;
-    
-    // 提交表单
-    document.getElementById('dataForm').submit();
-}
-
 // ========== 修改confirmSubmit函数 ==========
 function confirmSubmit() {
     // 隐藏确认模态框
@@ -2876,6 +2922,11 @@ function confirmSubmit() {
     
     // 记录提交的数据
     console.log('Data submitted:', submissionData);
+    
+    // 新增：提交成功后更新最后用户信息
+    setTimeout(() => {
+        updateLastUserInformation();
+    }, 2000);
 }
 
 function showConfirmationModal() {
@@ -2930,6 +2981,40 @@ function cancelSubmit() {
 
 function submitData() {
     showConfirmationModal();
+}
+
+// ========== 新增：iframe加载完成的回调函数 ==========
+function onFormSubmitComplete() {
+    console.log('Form submission complete');
+    // 这里可以添加提交完成后的额外处理
+}
+
+// ========== 修改：提交数据到Google Sheets ==========
+function submitDataToGoogleSheets(submissionData) {
+    // 准备表单数据
+    document.getElementById('form_timestamp').value = submissionData.timestamp;
+    document.getElementById('form_name').value = submissionData.name;
+    document.getElementById('form_action').value = submissionData.action;
+    document.getElementById('form_received').value = submissionData.received;
+    document.getElementById('form_check').value = submissionData.check;
+    document.getElementById('form_jobCompleted').value = submissionData.jobCompleted;
+    document.getElementById('form_quantity').value = submissionData.quantity;
+    document.getElementById('form_spreadsheetId').value = submissionData.spreadsheetId;
+    document.getElementById('form_sheetName').value = submissionData.sheetName;
+    document.getElementById('form_salesOrderNo').value = submissionData.salesOrderNo;
+    document.getElementById('form_itemNo').value = submissionData.itemNo;
+    
+    // 设置表单action到GAS Web App
+    document.getElementById('dataForm').action = GAS_SUBMIT_URL;
+    
+    // 添加iframe加载完成的监听器
+    const iframe = document.getElementById('hiddenIframe');
+    iframe.onload = function() {
+        onFormSubmitComplete();
+    };
+    
+    // 提交表单
+    document.getElementById('dataForm').submit();
 }
 
 function initScrollFollow() {
