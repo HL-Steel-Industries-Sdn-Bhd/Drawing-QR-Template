@@ -1416,11 +1416,16 @@
     </div>
   </div>
 
-  <!-- ===== 隐藏表单和iframe用于提交数据 ===== -->
+  <!-- ===== 修改：隐藏表单添加缺失的字段 ===== -->
   <form id="dataForm" method="post" target="hiddenIframe" style="display: none;">
     <input type="hidden" id="form_timestamp" name="timestamp">
     <input type="hidden" id="form_name" name="name">
     <input type="hidden" id="form_action" name="action">
+    <!-- 修复：添加缺失的表单字段 -->
+    <input type="hidden" id="form_received" name="received">
+    <input type="hidden" id="form_check" name="check">
+    <input type="hidden" id="form_jobCompleted" name="jobCompleted">
+    <input type="hidden" id="form_quantity" name="quantity">
     <input type="hidden" id="form_spreadsheetId" name="spreadsheetId">
     <input type="hidden" id="form_sheetName" name="sheetName">
     <input type="hidden" id="form_salesOrderNo" name="salesOrderNo">
@@ -1705,7 +1710,7 @@ function getUrlParameters() {
 // Function to fetch data from Google Apps Script
 async function fetchProductData(salesOrderNo, itemNo) {
     // 使用现有的GAS 1 web app URL
-    const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbx1g8Lf7I6btrdhPfJ91K5l6vwAlqi-IspFtPl1R1JAP6ln3Ns_vcrqI5NU-Cmf9SK7/exec';
+    const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbwBlq4acVGBVZzocFCR0rq0YXNk0N3S-emyv57JEjou0GleT7YHDS5TOR1uGNyvypRG/exec';
     
     const response = await fetch(`${gasWebAppUrl}?salesOrderNo=${encodeURIComponent(salesOrderNo)}&itemNo=${encodeURIComponent(itemNo)}`);
     
@@ -1720,7 +1725,7 @@ async function fetchProductData(salesOrderNo, itemNo) {
 async function fetchLastUserData(salesOrderNo, itemNo) {
     try {
         // 使用GAS Web App的getLastUser参数
-        const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbx1g8Lf7I6btrdhPfJ91K5l6vwAlqi-IspFtPl1R1JAP6ln3Ns_vcrqI5NU-Cmf9SK7/exec';
+        const gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbwBlq4acVGBVZzocFCR0rq0YXNk0N3S-emyv57JEjou0GleT7YHDS5TOR1uGNyvypRG/exec';
         
         const response = await fetch(`${gasWebAppUrl}?salesOrderNo=${encodeURIComponent(salesOrderNo)}&itemNo=${encodeURIComponent(itemNo)}&getLastUser=true`);
         
@@ -2357,7 +2362,7 @@ const QC_QUESTIONS = [
 ];
 
 // GAS Web App URL for submitting QC data
-const GAS_QC_SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbx1g8Lf7I6btrdhPfJ91K5l6vwAlqi-IspFtPl1R1JAP6ln3Ns_vcrqI5NU-Cmf9SK7/exec';
+const GAS_QC_SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbwBlq4acVGBVZzocFCR0rq0YXNk0N3S-emyv57JEjou0GleT7YHDS5TOR1uGNyvypRG/exec';
 
 // 卡片内容和iframe数据
 const cardContents = [
@@ -3598,7 +3603,7 @@ function getQCAnswersSummary() {
     return summary;
 }
 
-// ========== 修改confirmSubmit函数 ==========
+// ========== 修改：confirmSubmit函数 - 修复表单字段赋值 ==========
 function confirmSubmit() {
     // 隐藏确认模态框
     document.getElementById('confirmationModal').style.display = 'none';
@@ -3616,6 +3621,10 @@ function confirmSubmit() {
         timestamp: new Date().toISOString(),
         name: currentUser,
         action: "",
+        received: "",
+        check: "",
+        jobCompleted: "",
+        quantity: "",
         spreadsheetId: targetSpreadsheetInfo.spreadsheetId,
         sheetName: targetSpreadsheetInfo.sheetName,
         salesOrderNo: drawingInfo.salesOrder,
@@ -3759,10 +3768,15 @@ function submitDataToGoogleSheets(submissionData) {
     document.getElementById('form_timestamp').value = submissionData.timestamp;
     document.getElementById('form_name').value = submissionData.name;
     document.getElementById('form_action').value = submissionData.action;
-    document.getElementById('form_spreadsheetId').value = submissionData.spreadsheetId;
-    document.getElementById('form_sheetName').value = submissionData.sheetName;
-    document.getElementById('form_salesOrderNo').value = submissionData.salesOrderNo;
-    document.getElementById('form_itemNo').value = submissionData.itemNo;
+    // 修复：设置缺失的表单字段
+    document.getElementById('form_received').value = submissionData.received || "";
+    document.getElementById('form_check').value = submissionData.check || "";
+    document.getElementById('form_jobCompleted').value = submissionData.jobCompleted || "";
+    document.getElementById('form_quantity').value = submissionData.quantity || "";
+    document.getElementById('form_spreadsheetId').value = submissionData.spreadsheetId || "";
+    document.getElementById('form_sheetName').value = submissionData.sheetName || "";
+    document.getElementById('form_salesOrderNo').value = submissionData.salesOrderNo || "";
+    document.getElementById('form_itemNo').value = submissionData.itemNo || "";
     
     // 如果是Quality Control，设置QC数据
     if (currentCardIndex === 2) {
